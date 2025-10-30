@@ -24,3 +24,6 @@ Step 4: If you use vscode press F5 to run project or
 ```bash
 python manage.py runserver
 ```
+Superaccount
+username: admin123
+password: 123456

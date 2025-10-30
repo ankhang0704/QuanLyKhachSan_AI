@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Trang Chủ{% endblock %}
+{% load static %}
+
+{% block content %}
+
+<div class="relative overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 text-white">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 py-20 sm:py-32">
+        <div class="text-center space-y-8">
+            <div class="animate-fade-in">
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6">
+                    Dự đoán Thu nhập và Thất nghiệp<br/>
+                    <span class="text-yellow-300">Thông minh & Chính xác</span>
+                </h1>
+                <p class="text-xl sm:text-2xl text-purple-100 max-w-3xl mx-auto mb-8">
+                    Sử dụng công nghệ AI và Machine Learning tiên tiến để dự đoán mức thu nhập và tỷ lệ thất nghiệp dựa trên dữ liệu cá nhân
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'predict' %}" class="btn btn-lg bg-yellow-400 text-purple-900 border-none hover:bg-yellow-300 hover:scale-105 transition-all shadow-xl">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Bắt đầu Dự đoán
+                </a>
+                <a href="{% url 'about' %}" class="btn btn-lg btn-outline border-white text-white hover:bg-white hover:text-purple-700 transition-all">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Tìm hiểu thêm
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 hover:bg-opacity-30 transition-all">
+                    <div class="text-4xl font-bold mb-2">85%</div>
+                    <div class="text-sm text-purple-100">Độ chính xác</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 hover:bg-opacity-30 transition-all">
+                    <div class="text-4xl font-bold mb-2">10K+</div>
+                    <div class="text-sm text-purple-100">Người dùng</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 hover:bg-opacity-30 transition-all">
+                    <div class="text-4xl font-bold mb-2">50K+</div>
+                    <div class="text-sm text-purple-100">Dự đoán</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 hover:bg-opacity-30 transition-all">
+                    <div class="text-4xl font-bold mb-2">24/7</div>
+                    <div class="text-sm text-purple-100">Hỗ trợ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#F9FAFB"/>
+        </svg>
+    </div>
+</div>
+
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Tính năng nổi bật</h2>
+            <p class="text-xl text-gray-600">Khám phá những gì chúng tôi có thể làm cho bạn</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover-lift">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-brain text-3xl text-purple-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">AI Thông minh</h3>
+                <p class="text-gray-600">
+                    Sử dụng thuật toán Machine Learning tiên tiến với độ chính xác cao, được huấn luyện trên hàng triệu dữ liệu thực tế.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover-lift">
+                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-chart-bar text-3xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Phân tích Chi tiết</h3>
+                <p class="text-gray-600">
+                    Xem biểu đồ trực quan, thống kê đầy đủ và phân tích sâu về các yếu tố ảnh hưởng đến thu nhập của bạn.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover-lift">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-shield-alt text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Bảo mật Tuyệt đối</h3>
+                <p class="text-gray-600">
+                    Dữ liệu cá nhân của bạn được mã hóa và bảo vệ theo tiêu chuẩn quốc tế, đảm bảo an toàn tuyệt đối.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">Cách thức hoạt động</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-xl">1</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Nhập thông tin</h3>
+                            <p class="text-gray-600">Cung cấp các thông tin cá nhân như tuổi, học vấn, kinh nghiệm làm việc, ngành nghề...</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-xl">2</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">AI phân tích</h3>
+                            <p class="text-gray-600">Hệ thống xử lý dữ liệu qua mô hình Machine Learning được đào tạo kỹ lưỡng</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-xl">3</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Nhận kết quả</h3>
+                            <p class="text-gray-600">Xem dự đoán chi tiết về thu nhập, tỷ lệ thất nghiệp và các phân tích liên quan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl">
+                    <div class="space-y-4">
+                        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm">Thu nhập dự đoán</span>
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="text-3xl font-bold">$50,000</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm">Độ chính xác</span>
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="text-3xl font-bold">85%</div>
+                        </div>
+                        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm">Tỷ lệ thất nghiệp</span>
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="text-3xl font-bold">2.3%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-gradient-to-br from-purple-600 to-indigo-700 text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">Sẵn sàng khám phá thu nhập tương lai?</h2>
+        <p class="text-xl text-purple-100 mb-8">
+            Hàng nghìn người đã tin tưởng sử dụng hệ thống của chúng tôi. Bắt đầu ngay hôm nay!
+        </p>
+        <a href="{% url 'predict' %}" class="btn btn-lg bg-white text-purple-700 border-none hover:bg-gray-100 hover:scale-105 transition-all shadow-xl">
+            <i class="fas fa-rocket mr-2"></i>
+            Dự đoán ngay
+        </a>
+    </div>
+</section>
+
+{% endblock %}
