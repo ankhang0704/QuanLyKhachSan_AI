@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Chi tiết phòng {{ room_type.name }}
+{% endblock title %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <img src="{{ room_type.image.url }}" class="img-fluid" alt="{{ room_type.name }}">
+        <h1 class="mt-3">{{ room_type.name }}</h1>
+        <p>{{ room_type.description }}</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Thông tin chi tiết</h3>
+        <ul class="list-group">
+            <li class="list-group-item">Giá: {{ room_type.price_per_night }} VNĐ/đêm</li>
+            <li class="list-group-item">Sức chứa: {{ room_type.capacity }} người</li>
+        </ul>
+
+        <a href="{% url 'booking_form' room_type.id %}" class="btn btn-success mt-3">Đặt ngay</a>
+    </div>
+</div>
+{% endblock content %}

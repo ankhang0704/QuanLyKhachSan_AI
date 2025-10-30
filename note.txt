@@ -298,6 +298,20 @@ Phần trên chỉ cho phép bot trả lời dựa trên file `.txt` (dữ liệ
 2.  **Cập nhật Pipeline RAG (Giai đoạn 3):**
     Bạn không dùng `load_qa_chain` nữa, mà dùng **Agent**. Agent sẽ *quyết định* lúc nào thì *tra cứu file .txt* (RAG) và lúc nào thì *gọi hàm check\_availability* (Tool).
 
+
+Bảng màu này thường bao gồm:
+
+Màu nền chính: Màu Trắng (Tượng trưng cho mây, sự sạch sẽ) hoặc Màu Be/Vàng cát rất nhạt (Tượng trưng cho bãi cát).
+
+Màu chủ đạo: Xanh dương (nhiều sắc độ, từ Xanh Navy đậm đến Xanh da trời nhạt, tượng trưng cho biển và bầu trời).
+
+Màu nhấn (Accent):
+
+Màu Be (Beige) hoặc Nâu nhạt (Tượng trưng cho gỗ, dây thừng của thuyền).
+
+(Tùy chọn) Một chút Cam san hô (Coral) hoặc Vàng để tạo điểm nhấn ấm áp.
+
+
 Đây là một lộ trình rất vững chắc. Chúc bạn thành công với đồ án\!
 
 Bạn có muốn tôi làm rõ hơn về phần nào trong các giai đoạn trên không, ví dụ như **Logic kiểm tra phòng trống (Giai đoạn 1)** hay **Cách thiết lập Agent với Tool (Giai đoạn 4)**?

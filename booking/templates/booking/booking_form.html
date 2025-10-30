@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Đặt phòng {{ room_type.name }}
+{% endblock title %}
+
+{% block content %}
+<h2>Hoàn tất đặt phòng</h2>
+<p>Bạn đang đặt phòng loại: <strong>{{ room_type.name }}</strong></p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <p>Vui lòng nhập ngày nhận và trả phòng:</p>
+
+    {{ form.as_p }} <button type="submit" class="btn btn-primary">Xác nhận đặt phòng</button>
+</form>
+{% endblock content %}
