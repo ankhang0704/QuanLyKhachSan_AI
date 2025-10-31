@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('pages.urls')),
     path('blog/', include('booking.urls')),
     path('user/', include('users.urls')),
+    path('api/', include('chatbot.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()

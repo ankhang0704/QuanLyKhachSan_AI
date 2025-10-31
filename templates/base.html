@@ -511,8 +511,13 @@
                 })
                     .then(response => response.json())
                     .then(data => {
+                        if (data.answer){
+                            displayMessage(data.answer,'bot')
+                        }else if (data.error)
+                        {
                         // 6. Hiển thị câu trả lời của Bot
-                        displayMessage(data.answer, 'bot');
+                        displayMessage('Lỗi: ${data.error}','bot');
+                        }
                     })
                     .catch(error => {
                         console.error('Lỗi khi gọi API:', error);

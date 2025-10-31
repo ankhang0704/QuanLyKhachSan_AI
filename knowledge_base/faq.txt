@@ -1,0 +1,11 @@
+Hỏi: Giờ nhận phòng (check-in) là mấy giờ?
+Đáp: Giờ nhận phòng tiêu chuẩn của The Sailing Bay là sau 14:00 (2 giờ chiều).
+
+Hỏi: Giờ trả phòng (check-out) là mấy giờ?
+Đáp: Giờ trả phòng là trước 12:00 (12 giờ trưa).
+
+Hỏi: Khách sạn có hồ bơi không?
+Đáp: Có, chúng tôi có một hồ bơi vô cực tuyệt đẹp nhìn ra vịnh và một hồ bơi cho trẻ em.
+
+Hỏi: Khách sạn The Sailing Bay nằm ở đâu?
+Đáp: Khách sạn của chúng tôi tọa lạc tại 123 Đường Bờ Biển, thành phố Phan Thiết, Bình Thuận.

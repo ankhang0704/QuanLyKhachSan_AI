@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'users.apps.UsersConfig',
     'accounts.apps.AccountsConfig',
+    'chatbot.apps.ChatbotConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
