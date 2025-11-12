@@ -17,14 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+admin.site.site_header = "Quản trị Khách sạn The Sailing Bay"
+admin.site.site_title = "Admin The Sailing Bay"
+admin.site.index_title = "Chào mừng đến với trang quản trị"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pages.urls')),
-    path('blog/', include('booking.urls')),
+    path('booking/', include('booking.urls')),
     path('user/', include('users.urls')),
     path('api/', include('chatbot.urls')),
+    path('services/', include('services.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

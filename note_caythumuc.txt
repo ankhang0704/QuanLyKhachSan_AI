@@ -1,0 +1,108 @@
+📁 QuanLyKhachSan_AI/ (Thư mục gốc của bạn)
+├── 📄 .gitignore             (Chặn các file rác, file .env, .venv)
+├── 📄 manage.py              (File quản lý Django)
+├── 📄 requirements.txt        (Danh sách các thư viện Python)
+├── 📁 .venv/                  (Môi trường ảo của bạn)
+│
+├── 📁 config/                 (App cấu hình chính của Django)
+│   ├── 📄 __init__.py
+│   ├── 📄 settings.py         (Cài đặt: INSTALLED_APPS, DB, Allauth...)
+│   ├── 📄 urls.py             (File URL chính, trỏ đến các app)
+│   ├── 📄 wsgi.py
+│   └── 📄 asgi.py
+│
+├── 📁 pages/                 (App mới: Chứa các trang tĩnh)
+│   ├── 📄 __init__.py
+│   ├── 📄 views.py            (View cho: home, about, contact, gallery...)
+│   ├── 📄 urls.py             (URL cho các trang tĩnh)
+│   └── 📁 templates/
+│       └── 📁 pages/
+│           ├── 📄 home.html         (Trang chủ)
+│           ├── 📄 about.html        (Giới thiệu)
+│           ├── 📄 contact.html      (Liên hệ)
+│           ├── 📄 gallery.html      (Thư viện ảnh)
+│           └── 📄 offers.html       (Các gói khuyến mãi)
+│
+├── 📁 users/                 (App mới: Quản lý hồ sơ người dùng)
+│   ├── 📄 __init__.py
+│   ├── 📄 models.py           (CustomUser model của bạn ở đây)
+│   ├── 📄 views.py            (View cho: profile, my_bookings...)
+│   ├── 📄 urls.py
+│   └── 📁 templates/
+│       └── 📁 users/
+│           ├── 📄 profile.html        (Trang hồ sơ chung)
+│           ├── 📄 profile_edit.html   (Form chỉnh sửa hồ sơ)
+│           ├── 📄 my_bookings.html    (Danh sách các phòng đã đặt)
+│           ├── 📄 my_booking_detail.html (Chi tiết 1 đơn đã đặt)
+│           └── 📄 booking_cancel.html (Form xác nhận hủy phòng)
+│
+├── 📁 booking/               (App Đặt phòng của bạn)
+│   ├── 📄 __init__.py
+│   ├── 📄 models.py           (Models: RoomType, Room, Booking)
+│   ├── 📄 forms.py            (BookingForm)
+│   ├── 📄 views.py            (Logic tìm kiếm, tạo đơn đặt phòng)
+│   ├── 📄 urls.py
+│   └── 📁 templates/
+│       └── 📁 booking/
+│           ├── 📄 room_list.html      (Giới thiệu tất cả loại phòng)
+│           ├── 📄 room_detail.html    (Chi tiết 1 loại phòng)
+│           ├── 📄 search_results.html (Trang động: phòng còn trống)
+│           ├── 📄 booking_form.html   (Form điền thông tin khách)
+│           ├── 📄 booking_review.html (Xem lại đơn hàng trước khi xác nhận)
+│           ├── 📄 booking_success.html (Trang cảm ơn sau khi đặt)
+│           └── 📄 booking_failed.html (Trang báo lỗi đặt phòng)
+│
+├── 📁 services/              (App mới: Quản lý dịch vụ Spa, Nhà hàng)
+│   ├── 📄 __init__.py
+│   ├── 📄 models.py           (Model: Service, ServiceBooking)
+│   ├── 📄 views.py
+│   ├── 📄 urls.py
+│   └── 📁 templates/
+│       └── 📁 services/
+│           ├── 📄 services.html       (Danh sách các dịch vụ)
+│           └── 📄 service_detail.html (Chi tiết 1 dịch vụ, VD: Spa)
+│
+├── 📁 blog/                  (App mới: Cho tin tức, bài viết)
+│   ├── 📄 __init__.py
+│   ├── 📄 models.py           (Model: Post, Category, Tag)
+│   ├── 📄 views.py
+│   ├── 📄 urls.py
+│   └── 📁 templates/
+│       └── 📁 blog/
+│           ├── 📄 blog.html         (Danh sách bài viết)
+│           └── 📄 blog_post.html    (Chi tiết 1 bài viết)
+│
+├── 📁 chatbot/               (App Chatbot của bạn)
+│   ├── 📄 __init__.py
+│   ├── 📄 rag_pipeline.py     (Toàn bộ logic RAG, LangChain)
+│   ├── 📄 views.py            (Chỉ chứa API: /api/chatbot/)
+│   └── 📄 urls.py             (Định nghĩa URL cho API)
+│
+├── 📁 knowledge_base/        (Thư mục AI: Chứa file .txt kiến thức)
+│   ├── 📄 faq.txt
+│   ├── 📄 policy.txt
+│   └── 📄 services.txt
+│
+├── 📁 faiss_index/           (Thư mục AI: Chứa index vector đã học)
+│   ├── 📄 index.faiss
+│   └── 📄 index.pkl
+│
+├── 📁 static/                (Thư mục static toàn cục)
+│   ├── 📁 css/
+│   │   └── 📄 output.css      (File CSS đã build từ Tailwind/DaisyUI)
+│   ├── 📁 js/
+│   │   └── 📄 main.js         (Có thể chứa script chatbot)
+│   └── 📁 images/
+│       ├── 📄 logo.png
+│       └── 📄 room1.jpg
+│
+└── 📁 templates/             (Thư mục template toàn cục)
+    ├── 📄 base.html          (Layout chính, chứa navbar, footer, chatbot UI)
+    ├── 📄 _navbar.html       (Phần navbar, được {% include %})
+    └── 📁 account/           (GHI ĐÈ giao diện của Allauth)
+        ├── 📄 login.html       (Trang đăng nhập tùy chỉnh)
+        ├── 📄 signup.html     (Trang đăng ký tùy chỉnh)
+        ├── 📄 logout.html     (Trang xác nhận đăng xuất)
+        ├── 📄 password_change.html
+        ├── 📄 password_reset.html
+        └── 📄 (và các file allauth khác...)

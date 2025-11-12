@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Đơn đặt phòng của tôi
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-16 max-w-7xl">
+    <h1 class="text-4xl font-bold mb-3 text-base-content">Lịch Sử Đặt Phòng</h1>
+    <p class="text-lg text-base-content/70 mb-8">Quản lý và theo dõi các đơn đặt phòng của bạn tại The Sailing Bay.</p>
+
+    <div class="card bg-base-100 shadow-md p-4 mb-8 border border-base-300">
+        <form method="GET" action="{% url 'my_bookings' %}" class="flex flex-wrap items-end gap-4">
+
+            <div class="form-control w-full sm:w-auto flex-grow">
+                <label class="label">
+                    <span class="label-text">Loại phòng</span>
+                </label>
+                <select name="room_type" class="select select-bordered select-sm">
+                    <option value="">Tất cả</option>
+                    {% for type in room_types_list %}
+                    <option value="{{ type.id }}" {% if request.GET.room_type|stringformat:"s" == type.id|stringformat:"s" %}selected{% endif %}> {{ type.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-control w-full sm:w-auto flex-grow">
+                <label class="label">
+                    <span class="label-text">Trạng thái</span>
+                </label>
+                <select name="status" class="select select-bordered select-sm">
+                    <option value="">Tất cả</option>
+                    {% for key, value in status_choices %}
+                    <option value="{{ key }}" {% if request.GET.status == key %} selected {% endif %}>
+                        {{ value }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-control w-full sm:w-auto flex-grow">
+                <label class="label">
+                    <span class="label-text">Ngày nhận phòng</span>
+                </label>
+                <input type="date" name="check_in_date" value="{{ current_filters.check_in_date|default:'' }}"
+                    class="input input-bordered input-sm">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm mt-auto">
+                <i class="fas fa-filter"></i>
+                Lọc
+            </button>
+            <a href="{% url 'my_bookings' %}" class="btn btn-ghost btn-sm mt-auto">
+                Đặt lại
+            </a>
+        </form>
+    </div>
+
+    <div class="space-y-6">
+        {% for booking in bookings %}
+
+        {% if booking.status == 'CONFIRMED' %}
+        {% with badge_color='badge-success' status_icon='fas fa-check-circle' %} {% endwith %}
+        {% elif booking.status == 'PENDING' %}
+        {% with badge_color='badge-warning' status_icon='fas fa-hourglass-half' %} {% endwith %}
+        {% elif booking.status == 'CANCELLED' %}
+        {% with badge_color='badge-error' status_icon='fas fa-times-circle' %} {% endwith %}
+        {% else %}
+        {% with badge_color='badge-info' status_icon='fas fa-info-circle' %} {% endwith %}
+        {% endif %}
+
+        <div class="card w-full bg-base-100 shadow-xl border border-base-300">
+            <div class="card-body p-6">
+
+                <div class="flex justify-between items-start border-b border-base-200 pb-3 mb-3">
+                    <div>
+                        <h2 class="text-2xl font-bold text-primary mb-1 flex items-center gap-2">
+                            <i class="fas fa-bed"></i> {{ booking.room.room_type.name }}
+                        </h2>
+                        <p class="text-sm text-base-content/70">Mã đặt phòng: <strong class="text-base-content">#{{ booking.id }}</strong></p>
+                    </div>
+
+                    <div class="badge {{ badge_color }} text-white font-semibold flex items-center gap-1">
+                        <i class="{{ status_icon }}"></i> {{ booking.get_status_display }}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-base-content/80">Nhận phòng:</span>
+                        <p class="text-lg font-medium text-base-content">{{ booking.check_in }}</p>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-base-content/80">Trả phòng:</span>
+                        <p class="text-lg font-medium text-base-content">{{ booking.check_out }}</p>
+                    </div>
+
+                    {% if booking.room.room_number %}
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-base-content/80">Phòng số:</span>
+                        <p class="text-lg font-medium text-base-content">{{ booking.room.room_number }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-base-content/80">Tổng chi phí:</span>
+                        <p class="text-xl font-bold text-accent">{{ booking.total_price }} VNĐ</p>
+                    </div>
+                </div>
+
+                <div class="card-actions justify-end mt-4 pt-3 border-t border-base-200">
+                    <a href="{% url 'my_booking_detail' booking.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-info-circle"></i> Xem chi tiết
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+
+        <div class="alert alert-info shadow-lg text-center mx-auto mt-10 p-6">
+            <i class="fas fa-box-open text-3xl"></i>
+            <div class="text-base-content">
+                <h2 class="text-xl font-bold">Bạn chưa có đơn đặt phòng nào.</h2>
+                <p>Hãy bắt đầu hành trình của bạn tại The Sailing Bay ngay hôm nay!</p>
+            </div>
+            <a href="{% url 'search_results' %}" class="btn btn-primary mt-4">
+                Đặt phòng ngay
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}

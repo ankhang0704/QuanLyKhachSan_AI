@@ -27,3 +27,10 @@ python manage.py runserver
 Superaccount
 username: admin123
 password: 123456
+
+
+Mở terminal, cd vào thư mục gốc dự án (nơi có file package.json).
+
+Chạy npm install.
+
+Chạy npm run watch.

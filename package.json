@@ -1,0 +1,13 @@
+{
+    "name": "sailing-bay-project",
+    "version": "1.0.0",
+    "scripts": {
+        "watch": "npx tailwindcss -i ./static/css/src/input.css -o ./static/css/styles.css --watch"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.19",
+        "daisyui": "^4.4.19",
+        "postcss": "^8.4.38",
+        "tailwindcss": "^3.4.3"
+    }
+}

@@ -1,24 +1,275 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-Chi tiết phòng {{ room_type.name }}
+{{ room_type.name|default:"Chi tiết phòng" }} - The Sailing Bay
 {% endblock title %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <img src="{{ room_type.image.url }}" class="img-fluid" alt="{{ room_type.name }}">
-        <h1 class="mt-3">{{ room_type.name }}</h1>
-        <p>{{ room_type.description }}</p>
-    </div>
-    <div class="col-md-4">
-        <h3>Thông tin chi tiết</h3>
-        <ul class="list-group">
-            <li class="list-group-item">Giá: {{ room_type.price_per_night }} VNĐ/đêm</li>
-            <li class="list-group-item">Sức chứa: {{ room_type.capacity }} người</li>
-        </ul>
 
-        <a href="{% url 'booking_form' room_type.id %}" class="btn btn-success mt-3">Đặt ngay</a>
+<!-- Layout 2 Cột: Gallery và Thông tin -->
+<div class="bg-base-200">
+    <div class="container mx-auto px-4 py-16 max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+            <!-- CỘT 1: THƯ VIỆN ẢNH (CAROUSEL FADE + MODAL ZOOM) -->
+            <div>
+                <!-- Container chính cho gallery, dùng 'relative' để xếp chồng ảnh -->
+                <div id="image-gallery-container"
+                    class="relative w-full rounded-2xl shadow-xl aspect-video overflow-hidden group">
+
+                    {% for img in room_type.images.all %}
+                    <div
+                        class="gallery-slide absolute inset-0 transition-opacity duration-700 ease-in-out {% if not forloop.first %}opacity-0 pointer-events-none{% else %}opacity-100{% endif %}">
+
+                        <!-- Dùng onclick để gọi hàm JS và truyền URL của ảnh hiện tại -->
+                        <img src="{{ img.image.url }}" class="w-full h-full object-cover cursor-pointer"
+                            alt="Ảnh {{ forloop.counter }} cho {{ room_type.name }}"
+                            onclick="openImageModal('{{ img.image.url }}')">
+                    </div>
+                    {% empty %}
+                    <!-- Ảnh dự phòng nếu phòng không có gallery -->
+                    <div class="relative w-full h-full">
+                        <img src="{% static 'images/placeholder.png' %}" class="w-full h-full object-cover"
+                            alt="Chưa có ảnh" />
+                    </div>
+                    {% endfor %}
+
+                    <!-- Nút điều hướng -->
+                    {% if room_type.images.all|length > 1 %}
+                    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2 z-10">
+                        <button id="gallery-prev" class="btn btn-circle btn-glass">❮</button>
+                        <button id="gallery-next" class="btn btn-circle btn-glass">❯</button>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <!-- CỘT 2: THÔNG TIN & ĐẶT PHÒNG (GIỮ NGUYÊN) -->
+            <div class="flex flex-col justify-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    {{ room_type.name }}
+                </h1>
+
+                <!-- Giá -->
+                <div class="mb-6">
+                    <span class="text-3xl font-bold text-accent">
+                        {{ room_type.price_per_night }} VNĐ
+                    </span>
+                    <span class="text-base-content/70">/đêm</span>
+                </div>
+
+                <!-- Mô tả -->
+                <div class="prose max-w-none text-base-content/80 text-lg leading-relaxed mb-8">
+                    {{ room_type.description|linebreaks }}
+                </div>
+
+                <!-- Nút CTA -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        Đặt Phòng Ngay
+                    </a>
+                    <a href="{% url 'room_list' %}" class="btn btn-outline btn-lg">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Xem các phòng khác
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-{% endblock content %}
+
+<!-- Accordion (GIỮ NGUYÊN) -->
+<section class="py-16 bg-base-100">
+    <!-- ... (Giữ nguyên phần Accordion) ... -->
+    <div class="container mx-auto px-4 max-w-5xl">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Thông Tin Chi Tiết & Điều Khoản</h2>
+
+        <div class="space-y-4">
+            <!-- Tiện ích trong phòng -->
+            <div class="collapse collapse-plus bg-base-200 rounded-box">
+                <input type="radio" name="room-details-accordion" checked="checked" />
+                <div class="collapse-title text-xl font-medium">
+                    <i class="fas fa-wifi text-primary mr-2"></i>
+                    Tiện ích trong phòng
+                </div>
+                <div class="collapse-content">
+                    <ul class="list-disc list-inside space-y-2 text-base-content/80 p-4">
+                        <li>Miễn phí Internet không dây tốc độ cao</li>
+                        <li>Các phòng nghỉ rộng, diện tích từ 28 đến 44m2</li>
+                        <li>Tivi màn hình phẳng 32 inch</li>
+                        <li>Bàn làm việc</li>
+                        <li>Két sắt điện tử</li>
+                        <li>Dụng cụ pha trà/ cà phê</li>
+                        <li>Mini bar</li>
+                        <li>Máy sấy tóc</li>
+                        <li>Văn phòng phẩm</li>
+                        <li>Phòng tắm rộng với bồn tắm lớn và được trang bị vòi sen riêng biệt</li>
+                        <li>Điện áp: 220V – 50Hz (có sẵn thiết bị chuyển đổi)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Dịch vụ và Tiện ích -->
+            <div class="collapse collapse-plus bg-base-200 rounded-box">
+                <input type="radio" name="room-details-accordion" />
+                <div class="collapse-title text-xl font-medium">
+                    <i class="fas fa-concierge-bell text-primary mr-2"></i>
+                    Dịch vụ và Tiện ích
+                </div>
+                <div class="collapse-content">
+                    <ul class="list-disc list-inside space-y-2 text-base-content/80 p-4">
+                        <li>Xe bus miễn phí đưa đón khách đến các địa điểm tham quan</li>
+                        <li>Dịch vụ hỗ trợ khách 24/24</li>
+                        <li>Dịch vụ Lễ Tân 24/24</li>
+                        <li>Dịch vụ phòng 24/24</li>
+                        <li>Ngoại hối</li>
+                        <li>Dịch vụ giặt ủi</li>
+                        <li>Dịch vụ trông trẻ</li>
+                        <li>Dịch vụ chăm sóc sắc đẹp và Spa thư giãn</li>
+                        <li>Câu lạc bộ thể thao</li>
+                        <li>Dịch vụ đặt hoa</li>
+                        <li>Trung tâm dịch vụ văn phòng (thư ký, dịch thuật, chuyển phát...)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Thông tin dành cho khách hàng -->
+            <div class="collapse collapse-plus bg-base-200 rounded-box">
+                <input type="radio" name="room-details-accordion" />
+                <div class="collapse-title text-xl font-medium">
+                    <i class="fas fa-info-circle text-primary mr-2"></i>
+                    Thông tin chung
+                </div>
+                <div class="collapse-content p-4 text-base-content/80 space-y-2">
+                    <p><strong>Thẻ tín dụng:</strong> Visa, Master, American Express, JCB, Dinner Club</p>
+                    <p><strong>Ngôn ngữ:</strong> Tiếng Việt, Tiếng Anh, Tiếng Nga</p>
+                    <p><strong>Tiền tệ:</strong> Đồng Việt Nam (VNĐ), Đô La Mỹ (USD)</p>
+                    <p><strong>Khí hậu:</strong> Mũi Né có khí hậu nhiệt đới gió mùa, nắng ấm quanh năm. Nhiệt độ trung
+                        bình từ 26 – 33°C.</p>
+                </div>
+            </div>
+
+            <!-- Chính sách -->
+            <div class="collapse collapse-plus bg-base-200 rounded-box">
+                <input type="radio" name="room-details-accordion" />
+                <div class="collapse-title text-xl font-medium">
+                    <i class="fas fa-file-contract text-primary mr-2"></i>
+                    Chính sách của Resort
+                </div>
+                <div class="collapse-content p-4 text-base-content/80 space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-lg text-base-content">Quy trình nhận phòng và trả phòng</h4>
+                        <p>Giờ nhận phòng là từ 14:00 và giờ trả phòng là trước 12:00 trưa. Việc gia hạn trả phòng tùy
+                            thuộc vào tình trạng phòng trống và sẽ được tính phí như sau:</p>
+                        <ul class="list-disc list-inside ml-4 mt-2">
+                            <li>Trả phòng đến 18:00 – áp dụng 50% giá thỏa thuận</li>
+                            <li>Trả phòng sau 18:00 – áp dụng 100% giá thỏa thuận</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-base-content">Chính sách trẻ em</h4>
+                        <p>Miễn phí tối đa hai trẻ em dưới 12 tuổi, ở chung phòng với bố mẹ và sử dụng giường sẵn có.
+                            Trẻ em sẽ được tính thêm bữa sáng (miễn phí cho trẻ dưới 6 tuổi).</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-base-content">Giường phụ</h4>
+                        <p>Chính sách của khu nghỉ dưỡng cho phép tối đa 01 (một) giường phụ cho mỗi phòng (có tính
+                            phí).</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-base-content">Chính sách Hủy phòng và Không đến</h4>
+                        <p>Trong vòng 14 ngày trước ngày khách đến, 50% tổng doanh thu phòng sẽ được tính. Trong vòng 7
+                            ngày trước ngày khách đến, toàn bộ phí sẽ được áp dụng. Nếu khách không đến, 100% tổng số
+                            đêm phòng đã đặt sẽ được tính phí.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<dialog id="image_zoom_modal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl p-0 bg-transparent shadow-none">
+        <img id="modal_zoom_image" src="" alt="Ảnh phóng to" class="w-full h-auto object-contain" />
+        <div class="modal-action absolute top-0 right-0 m-2">
+            <form method="dialog">
+                <!-- Nút đóng modal -->
+                <button class="btn btn-sm btn-circle btn-ghost text-white bg-black/30 hover:bg-black/60">✕</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-sm">
+        <button>đóng</button>
+    </form>
+</dialog>
+
+{% endblock %}
+
+
+{% block extra_js %}
+{{ block.super }} <!-- Kế thừa JS từ base.html -->
+
+<script>
+    // Hàm mở modal và đặt ảnh (được gọi từ onclick)
+    function openImageModal(imageUrl) {
+        const modal = document.getElementById('image_zoom_modal');
+        const modalImage = document.getElementById('modal_zoom_image');
+        if (modal && modalImage) {
+            // SỬA LỖI: Cập nhật src của modal bằng imageUrl đã truyền vào
+            modalImage.src = imageUrl;
+            modal.showModal();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const galleryContainer = document.getElementById('image-gallery-container');
+
+        // Chỉ chạy script này nếu gallery tồn tại trên trang
+        if (galleryContainer) {
+            const slides = galleryContainer.querySelectorAll('.gallery-slide');
+            const prevBtn = document.getElementById('gallery-prev');
+            const nextBtn = document.getElementById('gallery-next');
+            let currentSlideIndex = 0;
+
+            if (slides.length > 1) {
+
+                function showSlide(index) {
+                    slides.forEach((slide, i) => {
+                        if (i === index) {
+                            // Hiện slide được chọn
+                            slide.classList.remove('opacity-0', 'pointer-events-none');
+                            slide.classList.add('opacity-100');
+                        } else {
+                            // Ẩn các slide khác
+                            slide.classList.remove('opacity-100');
+                            slide.classList.add('opacity-0', 'pointer-events-none');
+                        }
+                    });
+                }
+
+                prevBtn.addEventListener('click', () => {
+                    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+                    showSlide(currentSlideIndex);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                    showSlide(currentSlideIndex);
+                });
+
+                // Khởi tạo hiển thị slide đầu tiên (đề phòng JS được tải sau)
+                showSlide(currentSlideIndex);
+
+            } else {
+                // Nếu chỉ có 1 ảnh, ẩn các nút điều hướng
+                if (prevBtn) prevBtn.style.display = 'none';
+                if (nextBtn) nextBtn.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,5 +1,8 @@
+{% load static %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -7,59 +10,61 @@
     <meta name="description"
         content="The Sailing Bay - Resort bên bờ biển tuyệt đẹp với trải nghiệm sang trọng và dịch vụ đẳng cấp." />
     <title>{% block title %}The Sailing Bay{% endblock %} | The Sailing Bay</title>
-    {% load static %}
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- DaisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css">
 
-
-
-    <!-- Google Fonts -->
+    <!-- Tải Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: oklch(var(--b1));
         }
 
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Custom gradient background */
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Nút nổi */
+        .floating-btn {
+            position: fixed;
+            z-index: 40;
         }
 
-        .gradient-bg-light {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        .floating-btn-chat {
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1002;
         }
 
-        /* Glassmorphism effect */
-        .glass {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        .floating-btn-top {
+            bottom: 6.5rem;
+            right: 2rem;
         }
 
-        /* Animated gradient text */
+        @media (max-width: 640px) {
+            .floating-btn-top {
+                bottom: 6rem;
+            }
+        }
+
+        /* Hiệu ứng */
         .gradient-text {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background: linear-gradient(90deg, oklch(var(--p)) 0%, oklch(var(--a)) 50%, oklch(var(--p)) 100%);
             background-size: 200% auto;
             color: transparent;
             -webkit-background-clip: text;
             background-clip: text;
-            animation: gradient 3s linear infinite;
+            animation: gradient 4s linear infinite;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         @keyframes gradient {
@@ -72,45 +77,47 @@
             }
         }
 
-        /* Hover effects */
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .gradient-bg {
+            background: linear-gradient(135deg, oklch(var(--p)) 0%, oklch(var(--pf)) 100%);
         }
 
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        /* Navbar Glass */
+        .glass {
+            background: oklch(var(--b1) / 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid oklch(var(--b3));
         }
 
-        /* Custom scrollbar */
+        /* CSS cho thanh cuộn (Tương thích Light/Dark mode) */
         ::-webkit-scrollbar {
             width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: oklch(var(--b2));
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #667eea;
+            background: oklch(var(--p));
             border-radius: 5px;
+            border: 2px solid oklch(var(--b2));
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
+            background: oklch(var(--pf));
         }
 
-        /* Loading animation */
+        /* CSS cho Chatbot Loading (Giữ lại) */
         .loading-dots {
             display: inline-flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .loading-dots span {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: currentColor;
+            background: oklch(var(--b1));
             animation: bounce 1.4s infinite ease-in-out both;
         }
 
@@ -128,10 +135,12 @@
             80%,
             100% {
                 transform: scale(0);
+                opacity: 0.5;
             }
 
             40% {
                 transform: scale(1);
+                opacity: 1;
             }
         }
     </style>
@@ -139,81 +148,70 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="min-h-screen flex flex-col bg-gray-50" data-theme="light">
+<body class="min-h-screen flex flex-col bg-base-100">
 
-    <!-- Header Navigation -->
-    <header class="sticky top-0 z-50 bg-white shadow-md">
+    <header class="sticky top-0 z-50 glass">
         <div class="navbar max-w-7xl mx-auto px-4 lg:px-8">
 
-            <!-- Logo & Brand -->
             <div class="navbar-start">
                 <div class="dropdown lg:hidden">
                     <label tabindex="0" class="btn btn-ghost btn-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
+                        <i class="fas fa-bars text-xl"></i>
                     </label>
                     <ul tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a href="{% url 'home' %}" class="flex items-center gap-2">
-                                <i class="fas fa-home"></i> Trang chủ
-                            </a></li>
-                        <li><a href="{% url 'about' %}" class="flex items-center gap-2">
-                                <i class="fas fa-info-circle"></i> Về dự án
-                            </a></li>
-                        <li><a href="{% url 'contact' %}" class="flex items-center gap-2">
-                                <i class="fas fa-envelope"></i> Liên hệ
-                            </a></li>
+                        class="menu menu-sm dropdown-content mt-3 z-[51] p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a href="{% url 'home' %}"><i class="fas fa-home w-4"></i> Trang chủ</a></li>
+                        <li><a href="{% url 'room_list' %}"><i class="fas fa-bed w-4"></i> Phòng</a></li>
+                        <li><a href="{% url 'service_list' %}"><i class="fas fa-concierge-bell w-4"></i> Dịch vụ</a>
+                        </li>
+                        <li><a href="{% url 'gallery' %}"><i class="fas fa-images w-4"></i> Thư viện ảnh</a></li>
+                        <li><a href="{% url 'about' %}"><i class="fas fa-info-circle w-4"></i> Về dự án</a></li>
+                        <li><a href="{% url 'contact' %}"><i class="fas fa-envelope w-4"></i> Liên hệ</a></li>
                     </ul>
                 </div>
 
-                <a class="btn btn-ghost text-xl font-bold hover-lift" href="{% url 'home' %}">
-                    <span class="gradient-text">💼 Predict</span>
+                <a class="btn btn-ghost text-2xl font-bold no-animation" href="{% url 'home' %}">
+                    <span class="gradient-text">Sailing Bay</span>
                 </a>
             </div>
 
-            <!-- Desktop Navigation -->
             <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1 gap-1">
-                    <li>
-                        <a href="{% url 'home' %}"
-                            class="hover:bg-purple-50 hover:text-purple-600 transition-colors rounded-lg">
-                            <i class="fas fa-home"></i> Trang chủ
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'about' %}"
-                            class="hover:bg-purple-50 hover:text-purple-600 transition-colors rounded-lg">
-                            <i class="fas fa-info-circle"></i> Về dự án
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'contact' %}"
-                            class="hover:bg-purple-50 hover:text-purple-600 transition-colors rounded-lg">
-                            <i class="fas fa-envelope"></i> Liên hệ
-                        </a>
-                    </li>
+                <ul class="menu menu-horizontal px-1 gap-2">
+                    <li><a href="{% url 'home' %}" class="font-medium rounded-lg"><i class="fas fa-home"></i> Trang
+                            chủ</a></li>
+                    <li><a href="{% url 'room_list' %}" class="font-medium rounded-lg"><i class="fas fa-bed"></i>
+                            Phòng</a></li>
+                    <li><a href="{% url 'service_list' %}" class="font-medium rounded-lg"><i
+                                class="fas fa-concierge-bell"></i> Dịch vụ</a></li>
+                    <li><a href="{% url 'gallery' %}" class="font-medium rounded-lg"><i class="fas fa-images"></i> Thư
+                            viện ảnh</a></li>
+                    <li><a href="{% url 'about' %}" class="font-medium rounded-lg"><i class="fas fa-info-circle"></i> Về
+                            dự án</a></li>
+                    <li><a href="{% url 'contact' %}" class="font-medium rounded-lg"><i class="fas fa-envelope"></i>
+                            Liên hệ</a></li>
                 </ul>
             </div>
 
-            {% load socialaccount %}
-
-            <!-- User Menu -->
             <div class="navbar-end gap-2">
+
+                <label class="swap swap-rotate btn btn-ghost btn-circle">
+                    <input type="checkbox" id="theme-toggle" />
+                    <i class="swap-off fas fa-moon text-lg"></i>
+                    <i class="swap-on fas fa-sun text-lg"></i>
+                </label>
+
                 {% if user.is_authenticated %}
                 <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar hover-lift">
-                        <div class="w-10 rounded-full ring ring-purple-300 ring-offset-2">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar no-animation">
+                        <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                             {% get_social_accounts user as social_accounts %}
                             {% if social_accounts.google %}
                             {% for account in social_accounts.google|slice:":1" %}
-                            <img src="{{ account.get_avatar_url }}" alt="Avatar" />
+                            <img src="{{ account.get_avatar_url }}" alt="User Avatar" />
                             {% endfor %}
                             {% else %}
                             <div
-                                class="bg-gradient-to-br from-purple-500 to-indigo-600 w-full h-full flex items-center justify-center text-white font-bold">
+                                class="gradient-bg w-full h-full flex items-center justify-center text-white font-bold text-lg">
                                 {{ user.first_name|first|default:user.username|first|upper }}
                             </div>
                             {% endif %}
@@ -221,44 +219,48 @@
                     </div>
 
                     <ul tabindex="0"
-                        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-base-100 rounded-box w-64">
-                        <li class="menu-title px-4 py-3 border-b">
+                        class="menu menu-sm dropdown-content mt-3 z-[51] p-3 shadow-lg bg-base-100 rounded-box w-64 border border-base-300">
+                        <li class="menu-title px-4 py-3 border-b border-base-300">
                             <div class="flex flex-col">
-                                <span class="text-base font-semibold text-gray-800">
+                                <span class="text-base font-semibold text-base-content">
                                     {{ user.first_name|default:user.username }}
                                 </span>
-                                <span class="text-xs font-normal text-gray-500">
+                                <span class="text-xs font-normal text-base-content/70">
                                     {{ user.email }}
                                 </span>
                             </div>
                         </li>
 
                         <li class="mt-2">
-                            <a href="{% url 'history' %}" class="flex items-center gap-3 hover:bg-purple-50">
-                                <i class="fas fa-history text-purple-600"></i>
+                            <a href="{% url 'profile' %}" class="flex items-center gap-3">
+                                <i class="fas fa-user-cog text-primary w-4 text-center"></i>
+                                <span>Tài khoản & Mật khẩu</span>
+                            </a>
+                        </li>
+                        <li class="mt-2">
+                            <a href="{% url 'my_bookings' %}" class="flex items-center gap-3">
+                                <i class="fas fa-history text-primary w-4 text-center"></i>
                                 <span>Lịch sử đặt phòng</span>
                             </a>
                         </li>
-
                         <li class="mt-1">
                             <form action="{% url 'account_logout' %}" method="post" class="w-full">
                                 {% csrf_token %}
-                                <button type="submit" class="w-full flex items-center gap-3 text-error hover:bg-red-50">
-                                    <i class="fas fa-sign-out-alt"></i>
+                                <button type="submit"
+                                    class="w-full text-left p-2 rounded-lg flex items-center gap-3 text-error hover:bg-error/10">
+                                    <i class="fas fa-sign-out-alt w-4 text-center"></i>
                                     <span>Đăng xuất</span>
                                 </button>
                             </form>
                         </li>
                     </ul>
                 </div>
-
                 {% else %}
                 <div class="flex gap-2">
-                    <a href="{% url 'account_login' %}" class="btn btn-ghost hover:bg-purple-50">
+                    <a href="{% url 'account_login' %}" class="btn btn-ghost font-medium">
                         <i class="fas fa-sign-in-alt"></i> Đăng nhập
                     </a>
-                    <a href="{% url 'account_signup' %}"
-                        class="btn gradient-bg text-white border-none hover:opacity-90">
+                    <a href="{% url 'account_signup' %}" class="btn btn-primary hidden sm:flex">
                         <i class="fas fa-user-plus"></i> Đăng ký
                     </a>
                 </div>
@@ -267,267 +269,119 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow">
         {% block content %}
         {% endblock %}
     </main>
-    <div class="drawer drawer-end">
 
-        <input id="chat-drawer" type="checkbox" class="drawer-toggle" />
-
-        <div class="drawer-content">
-            <label for="chat-drawer"
-                class="btn btn-primary btn-circle btn-lg fixed bottom-8 right-8 z-50 drawer-button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-            </label>
+    <div id="chat-popup"
+        class="hidden fixed bottom-24 right-4 sm:right-8 w-[90vw] max-w-md h-[70vh] max-h-[600px] z-[1001] bg-base-100 rounded-2xl shadow-xl border border-base-300 flex flex-col transition-all duration-300">
+        <div class="flex items-center justify-between p-4 gradient-bg rounded-t-2xl">
+            <h3 class="text-lg font-bold flex items-center gap-2">
+                <i class="fas fa-robot"></i> Tư vấn viên AI
+            </h3>
+            <button id="close-chat-btn" class="btn btn-ghost btn-sm btn-circle hover:bg-primary-dark">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-
-        <div class="drawer-side z-[1001]">
-            <label for="chat-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-
-            <div class="flex h-full w-full max-w-md flex-col bg-base-100">
-
-                <div class="flex items-center justify-between p-4 shadow-md">
-                    <h3 class="text-lg font-bold">Tư vấn viên AI</h3>
-                    <label for="chat-drawer" class="btn btn-ghost btn-sm btn-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </label>
+        <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto p-4 bg-base-200">
+            <div class="chat chat-start">
+                <div class="chat-bubble chat-bubble-info rounded-2xl shadow-sm">
+                    Chào bạn! Tôi là trợ lý AI của The Sailing Bay, tôi có thể giúp gì cho bạn?
                 </div>
-
-                <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto p-4 bg-base-200">
-                    <div class="chat chat-start">
-                        <div class="chat-bubble chat-bubble-info">
-                            Chào bạn! Tôi là trợ lý AI của The Sailing Bay, tôi có thể giúp gì cho bạn?
-                        </div>
-                    </div>
-                    <div class="chat chat-end">
-                        <div class="chat-bubble chat-bubble-success">
-                            Khách sạn có hồ bơi không?
-                        </div>
-                    </div>
-                </div>
-
-                <form id="chat-form" class="flex items-center gap-2 p-4 border-t">
-                    <input id="chat-input" type="text" placeholder="Nhập câu hỏi..."
-                        class="input input-bordered flex-1" />
-                    <button type="submit" class="btn btn-primary">Gửi</button>
-                </form>
-
             </div>
         </div>
+        <form id="chat-form" class="flex items-center gap-2 p-4 border-t border-base-300 bg-base-100 rounded-b-2xl">
+            <input id="chat-input" type="text" placeholder="Nhập câu hỏi..."
+                class="input input-bordered flex-1 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg" />
+            <button type="submit" class="btn btn-primary btn-sm rounded-lg">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
     </div>
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- About Section -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-white gradient-text">💼 Dự Đoán Thu Nhập/Thất Nghiệp</h3>
-                    <p class="text-sm">
-                        Hệ thống dự đoán thu nhập và tỷ lệ thất nghiệp thông minh,
-                        hỗ trợ đưa ra quyết định nghề nghiệp tốt nhất.
-                    </p>
-                    <div class="flex gap-3">
-                        <a href="#" class="btn btn-circle btn-sm bg-gray-800 border-gray-700 hover:bg-purple-600">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="btn btn-circle btn-sm bg-gray-800 border-gray-700 hover:bg-purple-600">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="btn btn-circle btn-sm bg-gray-800 border-gray-700 hover:bg-purple-600">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" class="btn btn-circle btn-sm bg-gray-800 border-gray-700 hover:bg-purple-600">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                </div>
 
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Liên kết nhanh</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{% url 'home' %}" class="hover:text-purple-400 transition-colors">Trang chủ</a>
-                        </li>
-                        <li><a href="{% url 'about' %}" class="hover:text-purple-400 transition-colors">Về dự án</a>
-                        </li>
-                    </ul>
-                </div>
+    <button id="chat-toggle-btn"
+        class="btn btn-circle btn-lg floating-btn floating-btn-chat text-white border-0 shadow-lg hover:shadow-xl hover:scale-110 transition-all bg-gradient-to-br from-primary to-primary-focus"
+        title="Mở trợ lý chat">
+        <i class="fas fa-comment-dots text-2xl"></i>
+    </button>
 
-                <!-- Support -->
-                <div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Hỗ trợ</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{% url 'contact' %}" class="hover:text-purple-400 transition-colors">Liên hệ</a>
-                        </li>
-                        <li><a href="#" class="hover:text-purple-400 transition-colors">Câu hỏi thường gặp</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition-colors">Hướng dẫn sử dụng</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition-colors">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact Info -->
-                <div>
-                    <h4 class="text-lg font-semibold text-white mb-4">Liên hệ</h4>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-map-marker-alt text-purple-400 mt-1"></i>
-                            <span>Đại học Phan Thiết<br>Việt Nam</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <i class="fas fa-envelope text-purple-400"></i>
-                            <span>nguyenankhangpro7895123@gmail.com</span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <i class="fas fa-phone text-purple-400"></i>
-                            <span>+84 946 754 751</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Copyright -->
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-                <p>&copy; 2025 The Sailing Bay. All rights reserved. Made with <span class="text-red-500">❤</span> by
-                    Nguyễn An Khang</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Back to Top Button -->
     <button id="backToTop"
-        class="fixed bottom-8 right-8 btn btn-circle gradient-bg text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:scale-110">
+        class="floating-btn floating-btn-top btn btn-circle text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 bg-gradient-to-br from-primary to-primary-focus"
+        title="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Scripts -->
-    <script>
-        // Back to top button
-        const backToTopBtn = document.getElementById('backToTop');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
-                backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
-            }
-        });
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Active menu item
-        const currentPath = window.location.pathname;
-        const menuLinks = document.querySelectorAll('.menu a');
-
-        menuLinks.forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
-                link.classList.add('bg-purple-100', 'text-purple-600', 'font-semibold');
-            }
-        });
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        const csrftoken = getCookie('csrftoken'); // Lấy token 1 lần
-
-
-        // Hàm để hiển thị tin nhắn mới (theo cấu trúc chat của DaisyUI)
-        function displayMessage(message, sender) {
-            // 1. Xác định class dựa trên người gửi ('user' hoặc 'bot')
-            const chatClass = (sender === 'user') ? 'chat-end' : 'chat-start';
-            // 2. Xác định màu bong bóng chat
-            const bubbleClass = (sender === 'user') ? 'chat-bubble-success' : 'chat-bubble-info';
-
-            // 3. Tạo cấu trúc HTML mới cho tin nhắn
-            const messageHTML = `
-            <div class="chat ${chatClass}">
-                <div class="chat-bubble ${bubbleClass}">
-                    ${message}
+    <footer class="bg-neutral text-neutral-content mt-auto">
+        <div class="footer max-w-7xl mx-auto p-10">
+            <aside>
+                <a class="btn btn-ghost text-2xl font-bold no-animation" href="{% url 'home' %}">
+                    <span class="gradient-text">Sailing Bay</span>
+                </a>
+                <p>Trang web giới thiệu về dự án "The Sailing Bay"<br>Cung cấp dịch vụ đặt phòng khách sạn ven biển.</p>
+                <div class="flex gap-3 mt-4">
+                    <a href="#" class="btn btn-circle btn-sm btn-ghost" aria-label="Facebook"><i
+                            class="fab fa-facebook-f text-lg"></i></a>
+                    <a href="#" class="btn btn-circle btn-sm btn-ghost" aria-label="Twitter"><i
+                            class="fab fa-twitter text-lg"></i></a>
+                    <a href="#" class="btn btn-circle btn-sm btn-ghost" aria-label="LinkedIn"><i
+                            class="fab fa-linkedin-in text-lg"></i></a>
+                    <a href="#" class="btn btn-circle btn-sm btn-ghost" aria-label="GitHub"><i
+                            class="fab fa-github text-lg"></i></a>
                 </div>
+            </aside>
+            <nav>
+                <header class="footer-title opacity-100">Liên kết nhanh</header>
+                <a href="{% url 'home' %}" class="link link-hover">Trang chủ</a>
+                <a href="{% url 'room_list' %}" class="link link-hover">Phòng</a>
+                <a href="{% url 'service_list' %}" class="link link-hover">Dịch vụ</a>
+                <a href="{% url 'gallery' %}" class="link link-hover">Thư viện ảnh</a>
+            </nav>
+            <nav>
+                <header class="footer-title opacity-100">Hỗ trợ</header>
+                <a href="{% url 'about' %}" class="link link-hover">Về dự án</a>
+                <a href="{% url 'contact' %}" class="link link-hover">Liên hệ</a>
+                <a href="#" class="link link-hover">Câu hỏi thường gặp</a>
+                <a href="#" class="link link-hover">Chính sách bảo mật</a>
+            </nav>
+            <nav>
+                <header class="footer-title opacity-100">Liên hệ</header>
+                <p class="flex items-start gap-2">
+                    <i class="fas fa-map-marker-alt text-accent flex-shrink-0 mt-1"></i>
+                    <span>Đại học Phan Thiết<br>Phan Thiết, Bình Thuận, Việt Nam</span>
+                </p>
+                <p class="flex items-center gap-2">
+                    <i class="fas fa-envelope text-accent flex-shrink-0"></i>
+                    <span>nguyenankhangpro7895123@gmail.com</span>
+                </p>
+            </nav>
+        </div>
+        <div class="border-t border-neutral-content/20 mt-8 py-8 text-center text-sm">
+            <p class="text-base-content/70">&copy; 2025 The Sailing Bay. All rights reserved. <br class="sm:hidden">
+                Made with <span class="text-red-500">❤</span> by Nguyễn An Khang</p>
+        </div>
+    </footer>
+
+
+    <dialog id="image_zoom_modal" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl p-0 bg-transparent shadow-none">
+            <img id="modal_zoom_image" src="" alt="Ảnh phóng to" class="w-full h-auto object-contain" />
+            <div class="modal-action absolute top-0 right-0 m-2">
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost text-white bg-black/30 hover:bg-black/60">✕</button>
+                </form>
             </div>
-        `;
-
-            // 4. Thêm tin nhắn mới vào cuối khu vực chat
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.insertAdjacentHTML('beforeend', messageHTML);
-
-            // 5. Tự động cuộn xuống tin nhắn mới nhất
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+        </div>
+        <form method="dialog" class="modal-backdrop bg-black/70 backdrop-blur-sm">
+            <button>đóng</button>
+        </form>
+    </dialog>
 
 
-        // Chỉ chạy code khi trang đã tải xong
-        document.addEventListener("DOMContentLoaded", function () {
-
-            // 1. Lấy các phần tử DOM cần thiết
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-
-            // 2. Xử lý khi người dùng gửi form
-            chatForm.addEventListener('submit', function (event) {
-                event.preventDefault(); // Ngăn trang tải lại
-
-                const userMessage = chatInput.value.trim(); // Lấy nội dung
-
-                if (userMessage === '') {
-                    return; // Không làm gì nếu input rỗng
-                }
-
-                // 3. Hiển thị tin nhắn của người dùng ngay lập tức
-                displayMessage(userMessage, 'user');
-
-                // 4. Xóa nội dung trong ô input
-                chatInput.value = '';
-
-                // 5. Gửi tin nhắn đến API Django của bạn (Giai đoạn 3)
-                fetch('/api/chatbot/', { // Đảm bảo URL này đúng
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken // Thêm CSRF token
-                    },
-                    body: JSON.stringify({ question: userMessage })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.answer){
-                            displayMessage(data.answer,'bot')
-                        }else if (data.error)
-                        {
-                        // 6. Hiển thị câu trả lời của Bot
-                        displayMessage('Lỗi: ${data.error}','bot');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi gọi API:', error);
-                        displayMessage('Rất tiếc, đã có lỗi xảy ra. Vui lòng thử lại.', 'bot');
-                    });
-            });
-        });
-    </script>
+    <script src="{% static 'js/main.js' %}" defer></script>
 
     {% block extra_js %}{% endblock %}
+
 </body>
 
 </html>

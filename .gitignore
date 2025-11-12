@@ -1,2 +1,8 @@
 # Created by venv; see https://docs.python.org/3/library/venv.html
 .venv/
+pycache/
+*.pyc
+.env
+db.sqlite3
+.DS_Store
+node_modules/

@@ -1,317 +1,175 @@
-Lựa chọn Django là một quyết định **TUYỆT VỜI** cho đồ án này.
+Chào bạn, đây là một bước đi rất thông minh. Một đồ án tốt nghiệp mạnh không chỉ ở tính năng (như AI chatbot) mà còn ở **sự hoàn chỉnh và logic của luồng người dùng (user flow)**.
+
+Bạn nói đúng, danh sách của bạn là một khởi đầu tốt, nhưng để thực sự giống một trang web du lịch/khách sạn chuyên nghiệp, chúng ta cần phải xây dựng đầy đủ các bước trong "hành trình của khách hàng".
+
+Dưới đây là cấu trúc các trang (templates) hoàn chỉnh mà một website khách sạn như "The Sailing Bay" nên có, được chia theo từng khu vực chức năng:
+
+---
+
+### 1. 🏨 Khu vực Tĩnh & Giới thiệu
+Đây là những trang "mặt tiền" của khách sạn.
+* **`home.html` (Trang chủ):** (Bạn đã có)
+    * **Tác dụng:** Trang đầu tiên, gây ấn tượng. Thường chứa: ảnh đẹp nhất, một **form tìm kiếm phòng (check-in, check-out, số người)**, các loại phòng nổi bật, và lời kêu gọi (call-to-action) đặt phòng.
+* **`about.html` (Giới thiệu):** (Bạn đã có)
+    * **Tác dụng:** Kể câu chuyện về "The Sailing Bay", sứ mệnh, tầm nhìn. Xây dựng niềm tin.
+* **`contact.html` (Liên hệ):** (Bạn đã có)
+    * **Tác dụng:** Hiển thị bản đồ (Google Maps), địa chỉ, SĐT, email, và một form liên hệ (để gửi thắc mắc).
+* **`gallery.html` (Thư viện ảnh):** ⭐️ (Nên thêm)
+    * **Tác dụng:** Cực kỳ quan trọng. Nơi trưng bày hình ảnh chất lượng cao của khách sạn: sảnh, các loại phòng, hồ bơi, nhà hàng, quang cảnh vịnh.
+* **`services.html` (Dịch vụ):** (Nên thêm)
+    * **Tác dụng:** Trang tổng hợp, giới thiệu ngắn về các dịch vụ cộng thêm như nhà hàng, spa, gym, đưa đón sân bay, tổ chức hội nghị.
+* **`service_detail.html` (Chi tiết dịch vụ):** (Nên thêm)
+    * **Tác dụng:** Một trang riêng cho mỗi dịch vụ (ví dụ: `spa.html`, `restaurant.html`). Hiển thị chi tiết, bảng giá, và form đặt chỗ cho dịch vụ đó.
+
+---
+
+### 2. ➡️ Luồng Khám phá & Đặt phòng (Booking Flow)
+Đây là luồng quan trọng nhất, biến khách xem thành khách đặt phòng.
+
+* **`room_list.html` (Danh sách loại phòng):** (Bạn đã có)
+    * **Tác dụng:** Trang tĩnh, giới thiệu **tất cả** các loại phòng mà khách sạn có (Standard, Deluxe, Suite...), kèm ảnh và giá tham khảo (chưa cần ngày).
+* **`room_detail.html` (Chi tiết loại phòng):** (Bạn đã có)
+    * **Tác dụng:** Hiển thị thông tin chi tiết, tiện nghi, nhiều ảnh hơn cho **một** loại phòng cụ thể.
+* **`search_results.html` (Kết quả tìm kiếm):** ⭐️ (Cực kỳ quan trọng)
+    * **Tác dụng:** Đây là trang **động**. Sau khi người dùng nhập ngày check-in/check-out (từ trang chủ), trang này sẽ hiển thị các loại phòng **còn trống** (available) trong khoảng thời gian đó, kèm giá chính xác.
+* **`booking_form.html` (Form đặt phòng):** (Bạn đã có)
+    * **Tác dụng:** Sau khi khách chọn phòng từ trang kết quả, trang này yêu cầu họ nhập thông tin (Họ tên, SĐT, email, yêu cầu đặc biệt).
+* **`booking_review.html` (Xem lại đơn đặt):** (Nên thêm)
+    * **Tác dụng:** (Tùy chọn, nhưng rất chuyên nghiệp) Hiển thị tóm tắt toàn bộ đơn đặt (phòng, ngày, giá, thông tin khách) để họ xác nhận lần cuối trước khi thanh toán.
+* **`booking_success.html` (Đặt phòng thành công):** ⭐️ (Bắt buộc)
+    * **Tác dụng:** Trang "Cảm ơn". Hiển thị mã đặt phòng (Booking ID) và thông báo đã gửi email xác nhận.
+* **`booking_failed.html` (Đặt phòng thất bại):** (Nên thêm)
+    * **Tác dụng:** Thông báo lỗi (ví dụ: phòng vừa bị người khác đặt, lỗi thanh toán) và đề nghị thử lại.
 
-Lý do:
+---
 
-1.  **Hệ sinh thái Python:** Bạn đang làm AI. Django được xây dựng trên Python, vì vậy việc tích hợp các thư viện AI như `LangChain`, `google-generativeai`, hoặc `scikit-learn` là vô cùng tự nhiên và liền mạch.
-2.  **"Batteries-Included":** Django cung cấp sẵn hệ thống `Admin`, `Quản lý User` (Authentication), và `ORM` (để làm việc với database). Bạn không phải "chế tạo lại bánh xe" cho các chức năng quản lý cốt lõi.
-3.  **Mạnh mẽ và Bảo mật:** Django rất mạnh mẽ trong việc xử lý logic nghiệp vụ phức tạp (như kiểm tra phòng trống, quản lý booking) và có sẵn các biện pháp bảo mật hàng đầu.
+### 3. 👤 Khu vực Quản lý Người dùng (Account)
+Đây là các trang sau khi đăng nhập, sử dụng `django-allauth`.
 
-Đây là lộ trình chi tiết, từng bước để bạn thực hiện đồ án này với Django, bao gồm cả phần "AI Chatbot" theo phương pháp RAG.
+* **`login.html` / `register.html`:** (Bạn đã có)
+    * **Tác dụng:** Bạn chỉ cần *tạo template* để "ghi đè" (override) giao diện mặc định của `allauth` cho đẹp.
+* **`profile.html` (Hồ sơ cá nhân):** ⭐️ (Bắt buộc)
+    * **Tác dụng:** Trang "dashboard" chính sau khi đăng nhập. Hiển thị tên, email, và các liên kết nhanh (ví dụ: "Đơn đặt phòng của tôi", "Đổi mật khẩu").
+* **`profile_edit.html` (Chỉnh sửa hồ sơ):** (Nên thêm)
+    * **Tác dụng:** Form cho phép người dùng cập nhật thông tin (Họ tên, SĐT).
+* **`my_bookings.html` (Các đơn đặt phòng của tôi):** ⭐️ (Cực kỳ quan trọng)
+    * **Tác dụng:** Trang quan trọng nhất của người dùng. Hiển thị một **danh sách** tất cả các đơn đặt phòng (sắp tới, đã qua) của họ.
+* **`my_booking_detail.html` (Chi tiết đơn đặt của tôi):** (Nên thêm)
+    * **Tác dụng:** Hiển thị chi tiết của **một** đơn đặt cụ thể, và cung cấp các nút hành động như **"In xác nhận"** hoặc **"Hủy phòng"**.
+* **`booking_cancel.html` (Xác nhận hủy phòng):** (Nên thêm)
+    * **Tác dụng:** Form xác nhận (thường là một nút "Đồng ý hủy") để tránh người dùng bấm nhầm.
 
------
+* **Các trang của Allauth (Cần tạo template để làm đẹp):**
+    * `password_reset.html`, `password_reset_done.html`, `password_change.html`, `email_confirm.html`, v.v...
 
-### Giai đoạn 1: Xây dựng Lõi "Quản lý Khách sạn" (The Core)
+---
 
-Quên AI đi. Bước đầu tiên là xây dựng một website Django quản lý đặt phòng *hoạt động được*.
+### 4. 📰 Khu vực Marketing & Bổ trợ
+Đây là các trang để tăng tính hoàn thiện cho đồ án.
 
-#### 1.1. Cài đặt và Thiết lập Dự án
+* **`offers.html` (Khuyến mãi):**
+    * **Tác dụng:** Giới thiệu các gói (package), giảm giá đặc biệt (ví dụ: "Ở 3 đêm trả tiền 2", "Gói trăng mật").
+* **`blog.html` (Blog / Tin tức):**
+    * **Tác dụng:** Danh sách các bài viết (ví dụ: "5 điểm tham quan gần The Sailing Bay", "Kinh nghiệm du lịch Vịnh").
+* **`blog_post.html` (Chi tiết bài viết):**
+    * **Tác dụng:** Hiển thị nội dung một bài viết cụ thể.
 
-1.  Tạo môi trường ảo: `python -m venv venv`
-2.  Kích hoạt: `source venv/bin/activate` (hoặc `venv\Scripts\activate` trên Windows)
-3.  Cài đặt Django: `pip install django`
-4.  Tạo dự án: `django-admin startproject hotel_project .`
-5.  Tạo app nghiệp vụ: `python manage.py startapp booking`
-6.  Đăng ký app `booking` vào `INSTALLED_APPS` trong `hotel_project/settings.py`.
+---
 
-#### 1.2. Thiết kế Cơ sở dữ liệu (`booking/models.py`)
+### 💡 Lời khuyên cho Đồ án của bạn
 
-Đây là xương sống của bạn. Bạn sẽ cần ít nhất các model sau:
+Bạn không cần làm *tất cả* các trang trên. Hãy ưu tiên theo mức độ quan trọng:
 
-  * **RoomType (Loại phòng):**
+1.  **Lõi Tối thiểu (Bắt buộc):**
+    * `home.html` (với form tìm kiếm)
+    * `search_results.html` (trang quan trọng nhất, hiển thị phòng còn trống)
+    * `room_detail.html`
+    * `booking_form.html`
+    * `booking_success.html`
+    * Các trang `allauth` (login, register)
+    * `my_bookings.html` (danh sách phòng đã đặt)
 
-      * `name` (CharField): Tên loại phòng (Vd: "Deluxe", "Standard", "Suite")
-      * `description` (TextField): Mô tả
-      * `price` (DecimalField): Giá mỗi đêm
-      * `capacity` (IntegerField): Số người tối đa
-      * `image` (ImageField): Ảnh đại diện
+2.  **Để Đạt điểm Giỏi (Nên có):**
+    * Hoàn thiện toàn bộ các trang `allauth` (reset password, v.v.)
+    * `gallery.html` (Thư viện ảnh)
+    * `services.html` (Dịch vụ)
+    * `my_booking_detail.html` (Chi tiết + Nút Hủy)
+    * `about.html` và `contact.html`
 
-  * **Room (Phòng cụ thể):**
+3.  **Để "Wow" Hội đồng (Nếu còn thời gian):**
+    * `offers.html` (Khuyến mãi)
+    * `blog.html` và `blog_post.html`
 
-      * `room_type` (ForeignKey đến `RoomType`): Phòng này thuộc loại nào
-      * `room_number` (CharField): Tên/Số phòng (Vd: "101", "202A")
-      * `status` (CharField): Trạng thái (Vd: "available", "booked", "cleaning")
+Chúc bạn hoàn thiện tốt phần giao diện! Bạn có muốn tôi hướng dẫn chi tiết cách làm trang **`search_results.html`** (trang động, hiển thị phòng còn trống) không?
 
-  * **Booking (Đơn đặt phòng):**
+Chúc mừng bạn! Bạn vừa hoàn thành phần **phức tạp và quan trọng nhất** của toàn bộ đồ án. Xây dựng được một hệ thống đặt phòng và hủy phòng có kiểm tra tồn kho (inventory) là một thành tựu rất lớn.
 
-      * `user` (ForeignKey đến `User` của Django): Người đặt
-      * `room` (ForeignKey đến `Room`): Đặt phòng nào
-      * `check_in` (DateField): Ngày nhận phòng
-      * `check_out` (DateField): Ngày trả phòng
-      * `total_price` (DecimalField): Tổng chi phí
-      * `status` (CharField): (Vd: "pending", "confirmed", "cancelled")
+Bây giờ bạn đã có một "bộ khung" vững chắc, đây là các bước tiếp theo được sắp xếp theo thứ tự ưu tiên để biến đồ án của bạn từ "tốt" thành "xuất sắc":
 
-Sau khi định nghĩa, chạy `python manage.py makemigrations` và `python manage.py migrate`.
+---
 
-#### 1.3. Kích hoạt Trang Admin (`booking/admin.py`)
+## 🌎 1. Hoàn thiện "Trang Quản trị Admin"
 
-Đăng ký các model của bạn vào đây (Vd: `admin.site.register(RoomType)`).
-Tạo superuser: `python manage.py createsuperuser`.
-Giờ đây, bạn có thể chạy `python manage.py runserver` và truy cập `/admin` để **thêm dữ liệu khách sạn (loại phòng, phòng) bằng tay**.
+Hiện tại, trang `/admin` của bạn chỉ dùng để nhập liệu. Nhưng một đồ án "Quản lý" thực sự phải cho phép người quản lý (chủ khách sạn) **quản lý** được nghiệp vụ.
 
-#### 1.4. Xây dựng Logic Nghiệp vụ (`booking/views.py` và `booking/urls.py`)
+Đây là phần "ăn điểm" rất lớn của Django.
 
-Đây là các chức năng cho *người dùng* (khách hàng):
+* **Việc cần làm:** Tùy chỉnh file `admin.py` của các app (nhất là `booking` và `users`).
+* **Mục tiêu:**
+    * **Trong `BookingAdmin`:**
+        * Thêm `list_display` để hiển thị các cột (như `user`, `room`, `check_in`, `status`).
+        * Thêm `list_filter` để lọc theo `status` (xem ai đã check-in, ai đã hủy) hoặc theo `check_in` (xem các đơn của hôm nay).
+        * Thêm `search_fields` để tìm đơn theo tên `user` hoặc `id`.
+    * **Trong `RoomAdmin`:** Thêm `list_filter` theo `room_type`.
 
-1.  **Hiển thị danh sách phòng:** Một view `room_list` để lấy tất cả `RoomType` và hiển thị ra.
-2.  **Hiển thị chi tiết phòng:** Một view `room_detail` để xem chi tiết 1 `RoomType`.
-3.  **Logic kiểm tra phòng trống (Quan trọng):** Đây là logic phức tạp nhất. Khi người dùng chọn `check_in` và `check_out`, bạn phải:
-      * Tìm tất cả các `Booking` bị *chồng chéo* (overlap) với khoảng thời gian này.
-      * Loại bỏ các `Room` đã bị đặt trong các booking đó.
-      * Hiển thị các `RoomType` còn `Room` trống.
-4.  **Tạo đơn đặt phòng:** Một form (`BookingForm`) để người dùng điền thông tin và lưu `Booking` mới với trạng thái "pending".
-5.  **Quản lý User:** Sử dụng các view có sẵn của Django để Đăng nhập, Đăng xuất, Đăng ký.
 
------
 
-### Giai đoạn 2: Xây dựng Giao diện (The Face)
+---
 
-#### 2.1. Tạo Templates (HTML)
+## 👤 2. Hoàn thiện Hồ sơ Người dùng (User Profile)
 
-  * Tạo thư mục `templates` ở gốc dự án.
-  * Tạo các file: `base.html` (layout chung), `room_list.html`, `room_detail.html`, `booking_form.html`.
-  * Sử dụng cú pháp template của Django (`{% for room in rooms %}`) để hiển thị dữ liệu động từ views.
+Bạn đã có trang `my_bookings` và `booking_cancel`. Bây giờ là lúc hoàn thiện phần còn lại của khu vực người dùng.
 
-#### 2.2. Tạo Giao diện Chatbot (Chỉ là UI)
+* **Việc cần làm:** Tạo các view và template còn lại trong app `users`.
+* **Mục tiêu:**
+    * **`profile.html` (Trang hồ sơ):** Một trang "dashboard" chính, hiển thị "Chào bạn, [Tên User]" và các link (như "Đổi mật khẩu", "Xem lịch sử đặt phòng").
+    * **`profile_edit.html` (Chỉnh sửa hồ sơ):** Một `ModelForm` cho phép người dùng tự cập nhật các thông tin cơ bản (ví dụ: `first_name`, `last_name`, hoặc `phone_number` nếu bạn đã thêm nó vào `CustomUser` model).
 
-  * Trong `base.html`, thêm một "bong bóng chat" (chat bubble) ở góc dưới bên phải.
-  * Khi bấm vào, nó sẽ hiện ra một cửa sổ chat (dùng HTML/CSS/JS).
-  * Cửa sổ này có một khu vực hiển thị tin nhắn và một ô `input` để gõ. *Lúc này nó chưa có "não", chỉ là giao diện.*
+---
 
------
+## 💡 3. Nâng cấp "Bộ não" AI Chatbot (Phần "Wow")
 
-### Giai đoạn 3: Tích hợp "Bộ não" AI Chatbot (The Brain - RAG)
+Chatbot của bạn hiện tại rất thông minh trong việc trả lời các câu hỏi **tĩnh** (static) có trong file `.txt` (như "khách sạn có hồ bơi không?").
 
-Đây là phần "ăn điểm" AI của bạn. Chúng ta sẽ tạo một API endpoint trong Django để xử lý chat.
+Nhưng nó chưa thể trả lời các câu hỏi **động** (dynamic) như: *"Phòng Deluxe còn trống ngày mai không?"*
 
-#### 3.1. Cài đặt Thư viện AI
+* **Việc cần làm:** Nâng cấp `rag_pipeline.py` từ RAG đơn giản lên **LangChain Agents (Tác tử)**.
+* **Logic mới:**
+    1.  Bạn sẽ tạo một "Tool" (công cụ) cho Chatbot. "Tool" này là một hàm Python (ví dụ: `check_room_availability_tool`) có khả năng truy vấn vào CSDL `Inventory` của bạn.
+    2.  Khi người dùng hỏi, AI (Agent) sẽ tự nhận diện: "À, đây là câu hỏi về phòng trống. Mình phải dùng `check_room_availability_tool`."
+    3.  Agent sẽ gọi hàm tool, hàm tool truy vấn database và trả về (ví dụ: "Còn 5 phòng").
+    4.  Agent nhận kết quả "Còn 5 phòng" và trả lời người dùng: "Dạ, hiện tại phòng Deluxe ngày mai vẫn còn 5 phòng trống ạ."
 
-`pip install google-generativeai langchain-google-genai langchain faiss-cpu`
+Đây là bước nâng cấp AI quan trọng nhất, kết nối AI với logic nghiệp vụ của bạn.
 
-#### 3.2. Chuẩn bị Cơ sở Tri thức (Knowledge Base)
+---
 
-Tạo một thư mục `knowledge_base` trong dự án.
-
-  * Tạo file `faq.txt`: Chứa các câu hỏi thường gặp (Giờ check-in? Có hồ bơi không? Vị trí ở đâu?).
-  * Tạo file `policy.txt`: Chứa chính sách (Hủy phòng? Mang thú cưng?).
-  * Tạo file `services.txt`: Mô tả dịch vụ (Nhà hàng, Spa, Gym).
-
-#### 3.3. Xây dựng Pipeline RAG (Vd: trong `chatbot/rag_pipeline.py`)
-
-Bạn nên tạo một app mới: `python manage.py startapp chatbot`.
-Trong app này, tạo file `rag_pipeline.py` (đây là ví dụ dùng LangChain):
-
-```python
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain.vectorstores import FAISS
-from langchain.document_loaders import DirectoryLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains.question_answering import load_qa_chain
-import os
-
-# 1. Cấu hình API Key (Lấy từ Google AI Studio)
-os.environ["GOOGLE_API_KEY"] = "YOUR_GOOGLE_API_KEY"
-
-# 2. Tải và xử lý Knowledge Base
-loader = DirectoryLoader("./knowledge_base", glob="*.txt")
-documents = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-texts = text_splitter.split_documents(documents)
-
-# 3. Vector hóa và tạo Vector Store
-# Đây là mô hình để "số hóa" văn bản
-embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-
-# Tạo cơ sở dữ liệu vector từ tài liệu
-# BƯỚC NÀY SẼ MẤT THỜI GIAN LẦN ĐẦU TIÊN
-# Trong đồ án thực tế, bạn nên chạy cái này 1 lần và lưu lại
-vector_store = FAISS.from_documents(texts, embeddings)
-vector_store.save_local("faiss_index") # Lưu lại để dùng sau
-
-# 4. Tải LLM (Mô hình tạo sinh - Gemini)
-llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.7)
-
-# 5. Tạo Chain (Quy trình)
-# Đây là quy trình: Tìm kiếm tài liệu -> Đưa cho LLM -> Trả lời
-qa_chain = load_qa_chain(llm, chain_type="stuff") # "stuff" = nhồi tất cả vào prompt
-
-# 6. Hàm chính để gọi từ Django
-def get_chatbot_response(question):
-    try:
-        # Tìm các tài liệu liên quan trong vector store
-        relevant_docs = vector_store.similarity_search(question)
-        
-        # Gọi chain để tạo câu trả lời
-        response = qa_chain.invoke(
-            {"input_documents": relevant_docs, "question": question}
-        )
-        return response["output_text"]
-    except Exception as e:
-        print(f"Lỗi RAG: {e}")
-        return "Xin lỗi, tôi đang gặp sự cố. Vui lòng thử lại sau."
-```
-
-#### 3.4. Tạo API Endpoint trong Django (`chatbot/views.py`)
-
-Bây giờ, hãy "mở" hàm RAG kia ra thế giới web.
-
-```python
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from .rag_pipeline import get_chatbot_response # Import hàm của bạn
-
-@csrf_exempt # Tạm thời bỏ qua CSRF để test API, sau này nên dùng cách an toàn hơn
-def chatbot_api(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            question = data.get('question')
-            
-            if not question:
-                return JsonResponse({'error': 'Missing question'}, status=400)
-            
-            # Gọi bộ não AI
-            answer = get_chatbot_response(question)
-            
-            return JsonResponse({'answer': answer})
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    
-    return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
-```
-
-Và thêm vào `chatbot/urls.py` và `hotel_project/urls.py` để trỏ đến `path('api/chatbot/', views.chatbot_api)`.
-
-#### 3.5. Kết nối Frontend (JavaScript) với API
-
-Cuối cùng, quay lại file JS của bạn (cái điều khiển UI Chatbot):
-
-```javascript
-// Giả sử bạn có một form chat với id="chat-form" và input id="chat-input"
-const chatForm = document.getElementById('chat-form');
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages'); // Khu vực hiển thị tin nhắn
-
-chatForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const question = chatInput.value;
-    if (!question) return;
-
-    // Hiển thị câu hỏi của người dùng
-    displayMessage(question, 'user');
-    chatInput.value = ''; // Xóa input
-
-    // Gọi API Django
-    fetch('/api/chatbot/', { // Đây là URL bạn đã định nghĩa
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Bạn sẽ cần CSRF token ở đây cho sản phẩm thực tế
-        },
-        body: JSON.stringify({ question: question })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Hiển thị câu trả lời của bot
-        displayMessage(data.answer, 'bot');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        displayMessage('Rất tiếc, đã có lỗi xảy ra.', 'bot');
-    });
-});
-
-function displayMessage(message, sender) {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message', `${sender}-message`);
-    messageElement.textContent = message;
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight; // Cuộn xuống tin nhắn mới nhất
-}
-```
-
------
-
-### Giai đoạn 4: Nâng cao (Ăn điểm hội đồng)
-
-Phần trên chỉ cho phép bot trả lời dựa trên file `.txt` (dữ liệu tĩnh).
-Để "wow", bạn cần bot trả lời được câu hỏi về **dữ liệu động** (dynamic data) trong database Django.
-
-**Câu hỏi:** "Phòng Deluxe còn trống ngày mai không?"
-
-**Giải pháp:** Sử dụng **LangChain Agents & Tools**.
-
-1.  **Tạo một "Tool" (`chatbot/tools.py`):**
-    "Tool" là một hàm Python mà AI có thể *chọn* để gọi.
-
-    ```python
-    from booking.models import RoomType, Room, Booking
-    from datetime import datetime, timedelta
-
-    def check_availability(room_type_name: str, check_in_str: str, check_out_str: str) -> str:
-        """
-        Một Tool để kiểm tra tình trạng phòng trống trong database.
-        Chỉ sử dụng tool này khi người dùng hỏi về "còn phòng không", "availability".
-        """
-        try:
-            # Chuyển đổi string sang date object
-            check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
-            check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
-            
-            # 1. Tìm loại phòng
-            room_type = RoomType.objects.get(name__icontains=room_type_name)
-            
-            # 2. Tìm các phòng đã bị đặt trong khoảng thời gian đó
-            booked_rooms = Booking.objects.filter(
-                room__room_type=room_type,
-                status='confirmed',
-                check_in__lt=check_out, # Kiểm tra overlap
-                check_out__gt=check_in
-            ).values_list('room_id', flat=True)
-            
-            # 3. Đếm số phòng trống
-            total_rooms_of_type = Room.objects.filter(room_type=room_type).count()
-            available_rooms_count = total_rooms_of_type - len(set(booked_rooms))
-
-            if available_rooms_count > 0:
-                return f"Dạ, có {available_rooms_count} phòng loại {room_type.name} còn trống từ {check_in} đến {check_out} ạ."
-            else:
-                return f"Rất tiếc, loại phòng {room_type.name} đã hết trong khoảng thời gian đó."
-        
-        except RoomType.DoesNotExist:
-            return f"Xin lỗi, khách sạn không có loại phòng nào tên là {room_type_name}."
-        except Exception as e:
-            return f"Có lỗi xảy ra khi kiểm tra: {str(e)}"
-
-    ```
-
-2.  **Cập nhật Pipeline RAG (Giai đoạn 3):**
-    Bạn không dùng `load_qa_chain` nữa, mà dùng **Agent**. Agent sẽ *quyết định* lúc nào thì *tra cứu file .txt* (RAG) và lúc nào thì *gọi hàm check\_availability* (Tool).
-
-
-Bảng màu này thường bao gồm:
-
-Màu nền chính: Màu Trắng (Tượng trưng cho mây, sự sạch sẽ) hoặc Màu Be/Vàng cát rất nhạt (Tượng trưng cho bãi cát).
-
-Màu chủ đạo: Xanh dương (nhiều sắc độ, từ Xanh Navy đậm đến Xanh da trời nhạt, tượng trưng cho biển và bầu trời).
-
-Màu nhấn (Accent):
-
-Màu Be (Beige) hoặc Nâu nhạt (Tượng trưng cho gỗ, dây thừng của thuyền).
-
-(Tùy chọn) Một chút Cam san hô (Coral) hoặc Vàng để tạo điểm nhấn ấm áp.
-
-
-Đây là một lộ trình rất vững chắc. Chúc bạn thành công với đồ án\!
-
-Bạn có muốn tôi làm rõ hơn về phần nào trong các giai đoạn trên không, ví dụ như **Logic kiểm tra phòng trống (Giai đoạn 1)** hay **Cách thiết lập Agent với Tool (Giai đoạn 4)**?
+## 🖼️ 4. Hoàn thiện các Trang Tĩnh và Dịch vụ
+
+Website của bạn vẫn cần các trang "mặt tiền" để trông giống một khách sạn thật.
+
+* **Việc cần làm:** Tạo các view đơn giản (`ListView`, `DetailView`) và template cho các trang còn lại.
+* **Mục tiêu:**
+    * **`gallery.html` (Thư viện ảnh):** Một trang đơn giản hiển thị tất cả các ảnh từ model `RoomImage` (lấy từ tất cả `RoomType`).
+    * **`offers.html` (Khuyến mãi):** Một trang tĩnh giới thiệu các gói giảm giá.
+    * **`booking_service.html` (Đặt dịch vụ):** Bạn đã có `services.html`. Bước tiếp theo là tạo một model mới (ví dụ `ServiceBooking`) và một form cho phép người dùng đặt lịch Spa hoặc đặt bàn nhà hàng.
+
+---
+
+**Lời khuyên của tôi:** Hãy bắt đầu với **Ưu tiên 1 (Trang Admin)**. Nó tương đối dễ làm (chỉ sửa `admin.py`), không cần logic phức tạp, nhưng lại tăng giá trị của một "Hệ thống Quản lý" lên rất nhiều.
+
+Bạn muốn tôi hướng dẫn chi tiết phần nào đầu tiên? Ví dụ: "Cách tùy chỉnh Trang Admin cho `Booking`" hay "Cách nâng cấp Chatbot bằng `Agents`"?
+
+Abc@123456
+A@123456
+@123456Abc

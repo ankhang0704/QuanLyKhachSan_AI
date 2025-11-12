@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,18 +30,22 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+ALLAUTH_UI_THEME = "daisyui"
+
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     'booking.apps.BookingConfig',
     'pages.apps.PagesConfig',
     'users.apps.UsersConfig',
-    'accounts.apps.AccountsConfig',
     'chatbot.apps.ChatbotConfig',
+    'services.apps.ServicesConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -55,12 +59,15 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+
 # Các thiết lập tùy chọn của allauth
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Có thể là 'mandatory', 'optional', hoặc 'none'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,7 +145,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# URL công khai để truy cập file static (VD: /static/css/styles.css)
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 STATIC_ROOT = BASE_DIR / 'static_collected'
 
@@ -168,3 +180,56 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 SOCIALACCOUNT_STORE_TOKENS = True
+
+# 1. URL công khai để truy cập file media (VD: /media/services/spa.jpg)
+MEDIA_URL = '/media/'
+
+# 2. Đường dẫn tuyệt đối đến thư mục media trên ổ đĩa
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# ------------- CÀI ĐẶT JAZZMIN -------------
+JAZZMIN_SETTINGS = {
+    # Tiêu đề trên tab trình duyệt (thay thế "Django site admin")
+    "site_title": "The Sailing Bay Admin",
+
+    # Tiêu đề ở góc trên bên trái (thay thế "Django administration")
+    "site_header": "The Sailing Bay",
+
+    # Tên thương hiệu (cho màn hình đăng nhập)
+    "site_brand": "The Sailing Bay",
+
+    # Logo cho màn hình đăng nhập (đặt logo của bạn vào static/images/)
+    # "login_logo": "images/logo-login.png",
+
+    # Logo cho thanh điều hướng
+    # "site_logo": "images/logo-navbar.png",
+
+    # Chào mừng ở màn hình đăng nhập
+    "welcome_sign": "Chào mừng đến với trang quản trị The Sailing Bay",
+
+    # Bản quyền ở footer
+    "copyright": "The Sailing Bay Hotel Ltd.",
+
+    # --- TÙY CHỈNH GIAO DIỆN ---
+    # Theme (bạn có thể thử "flatly", "cerulean", "darkly"...)
+    "theme": "flatly",
+
+    # Tùy chỉnh menu bên (sidebar)
+    "side_menu_nav": True,
+
+    # Hiển thị model theo nhóm app
+    "show_models_in_menu": True,
+
+    # Tùy chỉnh menu (Nếu bạn muốn sắp xếp lại các app)
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "users.User": "fas fa-user",
+        "booking.Booking": "fas fa-calendar-check",
+        "booking.RoomType": "fas fa-door-open",
+        "booking.Room": "fas fa-bed",
+        "booking.Inventory": "fas fa-clipboard-list",
+        "services.Service": "fas fa-concierge-bell",
+    },
+}

@@ -5,5 +5,272 @@
 {% block content %}
 
 
+<section class="hero min-h-[60vh] lg:min-h-[70vh]"
+    style="background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');">
+    <div class="hero-overlay bg-black bg-opacity-40"></div>
+    <div class="hero-content text-center text-neutral-content">
+        <div class="max-w-xl">
+            <h1 class="mb-6 text-5xl md:text-6xl font-bold" style="text-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                Khám Phá Kỳ Nghỉ Hoàn Hảo
+            </h1>
+            <p class="mb-5 text-xl md:text-2xl font-light" style="text-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                Trải nghiệm sự sang trọng tại The Sailing Bay
+            </p>
+            <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg">Xem Phòng Ngay</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 md:py-16 px-4 bg-base-200">
+    <div class="max-w-5xl mx-auto -mt-40 relative z-20">
+
+        <div class="card bg-base-100 shadow-2xl p-6 md:p-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-base-content">
+                Kiểm tra phòng trống
+            </h2>
+
+            <form id="booking-form" action="{% url 'search_results' %}" method="GET" class="space-y-6">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                    <div class="form-control w-full">
+                        <label for="check_in" class="label">
+                            <span class="label-text font-semibold">Ngày nhận phòng:</span>
+                        </label>
+                        <input type="date" name="check_in" id="check_in" class="input input-bordered w-full" required>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="check_out" class="label">
+                            <span class="label-text font-semibold">Ngày trả phòng:</span>
+                        </label>
+                        <input type="date" name="check_out" id="check_out" class="input input-bordered w-full" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                    <div class="form-control w-full">
+                        <label for="guests" class="label">
+                            <span class="label-text font-semibold">Số lượng khách:</span>
+                        </label>
+                        <select name="guests" id="guests" class="select select-bordered w-full">
+                            <option value="1">1 Khách</option>
+                            <option value="2" selected>2 Khách</option>
+                            <option value="3">3 Khách</option>
+                            <option value="4">4+ Khách</option>
+                        </select>
+                    </div>
+
+                    <div class="form-control w-full">
+                        <label for="rooms" class="label">
+                            <span class="label-text font-semibold">Số lượng phòng:</span>
+                        </label>
+                        <select name="rooms" id="rooms" class="select select-bordered w-full">
+                            <option value="1" selected>1 Phòng</option>
+                            <option value="2">2 Phòng</option>
+                            <option value="3">3 Phòng</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-full mt-4">
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    Tìm Kiếm & Đặt Phòng
+                </button>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="py-20 px-4 bg-base-100">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            <div class="w-full lg:w-1/2">
+
+                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                    alt="Khu vực sảnh chờ The Sailing Bay" class="w-full h-full object-cover rounded-2xl shadow-xl">
+            </div>
+            <div class="w-full lg:w-1/2">
+                <span class="text-primary font-semibold text-lg">Chào mừng đến The Sailing Bay</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 mt-2">
+                    Nơi Sang Trọng Gặp Gỡ <span class="gradient-text">Đại Dương</span>
+                </h2>
+                <p class="text-lg text-base-content/80 leading-relaxed mb-6">
+                    Tọa lạc tại vị trí đắc địa bên bờ biển, The Sailing Bay Resort không chỉ là một nơi nghỉ dưỡng,
+                    đó là một trải nghiệm. Từ những căn phòng suite hướng biển ngoạn mục đến các biệt thự sân vườn
+                    biệt lập, mỗi chi tiết đều được chăm chút để mang đến cho bạn sự thoải mái và yên bình tuyệt đối.
+                </p>
+                <p class="text-lg text-base-content/80 leading-relaxed mb-8">
+                    Hãy để chúng tôi biến kỳ nghỉ của bạn thành một kỷ niệm khó quên với dịch vụ đẳng cấp
+                    và lòng mến khách nồng hậu.
+                </p>
+                <a href="{% url 'service_list' %}" class="btn btn-primary">Khám Phá Tiện Nghi</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="rooms" class="py-20 px-4 bg-base-100">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Các Loại Phòng Nổi Bật</h2>
+            <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+                Mỗi không gian đều được thiết kế cho sự thoải mái và sang trọng tuyệt đối.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+
+            {% for room in rooms %}
+            {% if forloop.counter <= 4 %} <div
+                class="card card-compact w-full h-96 bg-base-100 shadow-xl image-full group">
+                <figure class="h-full">
+                    {% if room.get_thumbnail_image %}
+                    <img src="{{ room.get_thumbnail_image }}" alt="{{ room.name }}"
+                        class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
+                    {% else %}
+                    <img src="https://via.placeholder.com/600x450.png?text=The+Sailing+Bay" alt="Chưa có ảnh"
+                        class="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
+                    {% endif %}
+                </figure>
+
+                <div class="card-body justify-end p-6 bg-gradient-to-t from-black/70 to-transparent">
+                    <h3 class="card-title text-2xl font-bold text-white mb-1">
+                        {{ room.name }}
+                    </h3>
+
+                    <p class="text-xl font-semibold text-accent mb-2">
+                        {{ room.price_per_night }} VNĐ
+                        <span class="text-sm font-normal text-white/90">/đêm</span>
+                    </p>
+
+                    <div class="card-actions justify-start">
+                        <a href="{% url 'room_detail' room.id %}" class="btn btn-primary btn-sm">
+                            Xem chi tiết
+                            <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+        </div>
+
+        {% endif %}
+        {% empty %}
+
+        <div class="col-span-full">
+            <div class="alert alert-info shadow-lg">
+                <div>
+                    <i class="fas fa-info-circle text-2xl"></i>
+                    <span>Hiện tại chưa có loại phòng nào được thêm vào cơ sở dữ liệu.</span>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-12">
+        <a href="{% url 'room_list' %}" class="btn btn-primary btn-lg">
+            Xem Tất Cả Các Hạng Phòng
+        </a>
+    </div>
+
+    </div>
+</section>
+
+<section id="amenities" class="py-20 px-4 bg-base-100">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-4xl font-bold mb-12 text-center">Tiện Nghi Đẳng Cấp Quốc Tế</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <div class="text-center p-4">
+                <i class="fas fa-swimmer text-5xl mb-4 text-primary"></i>
+                <h3 class="text-xl font-bold mb-2">Hồ Bơi Vô Cực</h3>
+                <p class="text-base-content/70">Hồ bơi vô cực nước trong vắt nhìn ra vịnh</p>
+            </div>
+
+            <div class="text-center p-4">
+                <i class="fas fa-utensils text-5xl mb-4 text-primary"></i>
+                <h3 class="text-xl font-bold mb-2">Ẩm Thực Cao Cấp</h3>
+                <p class="text-base-content/70">Ẩm thực lấy cảm hứng từ sao Michelin bởi các đầu bếp trứ danh</p>
+            </div>
+
+            <div class="text-center p-4">
+                <i class="fas fa-spa text-5xl mb-4 text-primary"></i>
+                <h3 class="text-xl font-bold mb-2">Spa Sang Trọng</h3>
+                <p class="text-base-content/70">Trẻ hóa với các liệu pháp chăm sóc sức khỏe toàn diện</p>
+            </div>
+
+            <div class="text-center p-4">
+                <i class="fas fa-dumbbell text-5xl mb-4 text-primary"></i>
+                <h3 class="text-xl font-bold mb-2">Thể Thao & Giải Trí</h3>
+                <p class="text-base-content/70">Thể thao dưới nước, yoga, và trung tâm thể hình</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 px-4 text-white bg-gradient-to-br from-primary to-primary-focus">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Đặt Phòng Ngay Để Nhận Ưu Đãi</h2>
+        <p class="text-xl mb-10 opacity-95">
+            Giảm giá 20% cho khách đặt phòng sớm. Ưu đãi có hạn đến hết ngày 31/12.
+        </p>
+        <button class="btn btn-neutral btn-lg text-lg transition-transform transform hover:scale-105">
+            Nhận Ưu Đãi
+        </button>
+    </div>
+</section>
+
+<script>
+    // Chỉ chạy script khi DOM đã sẵn sàng (đã được bọc trong base.html)
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Đặt ngày tối thiểu là hôm nay
+        const today = new Date().toISOString().split('T')[0];
+        const checkinInput = document.getElementById('checkin');
+        const checkoutInput = document.getElementById('checkout');
+
+        if (checkinInput) {
+            checkinInput.setAttribute('min', today);
+        }
+        if (checkoutInput) {
+            checkoutInput.setAttribute('min', today);
+        }
+
+        // Cập nhật logic cho checkout date khi checkin thay đổi
+        if (checkinInput && checkoutInput) {
+            checkinInput.addEventListener('change', function () {
+                // Khi chọn ngày nhận phòng, ngày trả phòng phải sau ngày đó
+                const checkinDate = checkinInput.value;
+                checkoutInput.setAttribute('min', checkinDate);
+                // Nếu ngày trả phòng cũ trước ngày nhận phòng mới, reset nó
+                if (checkoutInput.value < checkinDate) {
+                    checkoutInput.value = checkinDate;
+                }
+            });
+        }
+
+        // Chức năng nút tìm kiếm (Sử dụng ID #search-btn)
+        const searchBtn = document.getElementById('search-btn');
+
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function () {
+                const checkin = checkinInput.value;
+                const checkout = checkoutInput.value;
+                if (checkin && checkout) {
+                    alert(`Đang tìm phòng trống từ ${checkin} đến ${checkout}`);
+                    // TODO: Chuyển hướng đến trang tìm kiếm
+                    // window.location.href = `/search?checkin=${checkin}&checkout=${checkout}`;
+                } else {
+                    alert('Vui lòng chọn cả ngày nhận phòng và ngày trả phòng');
+                }
+            });
+        }
+    });
+</script>
+
+
 
 {% endblock %}

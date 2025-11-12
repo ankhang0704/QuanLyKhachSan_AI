@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Phòng trống - The Sailing Bay
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-16 max-w-7xl">
+
+    <div class="mb-12 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-3 text-base-content">
+            Phòng còn trống
+        </h1>
+        <p class="text-xl text-primary font-semibold">
+            Kết quả cho: {{ check_in }} <i class="fas fa-arrow-right mx-2"></i> {{ check_out }}
+        </p>
+    </div>
+
+    {% if error %}
+    <div role="alert" class="alert alert-error shadow-lg max-w-3xl mx-auto mb-10">
+        <i class="fas fa-exclamation-triangle text-2xl"></i>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <div class="max-w-6xl mx-auto space-y-10">
+
+        {% for type in room_types %}
+
+        <div class="card card-compact md:card-side bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl">
+
+            <figure class="w-full md:w-5/12 lg:w-1/3 h-60 md:h-auto">
+                {% if type.get_thumbnail_image %}
+                <img src="{{ type.get_thumbnail_image }}" alt="{{ type.name }}" class="w-full h-full object-cover">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="Chưa có ảnh" class="w-full h-full object-cover">
+                {% endif %}
+            </figure>
+
+            <div class="card-body md:w-7/12 lg:w-2/3">
+                <h2 class="card-title text-2xl font-bold">{{ type.name }}</h2>
+
+                <p class="text-base-content/80 mb-2">
+                    {{ type.description|default:"Trải nghiệm không gian nghỉ dưỡng tuyệt vời với đầy đủ tiện nghi." }}
+                </p>
+
+                <div class="my-2">
+                    <span class="text-2xl font-bold text-accent">
+                        {{ type.price_per_night }} VNĐ
+                    </span>
+                    <span class="text-sm font-normal text-base-content/70">/đêm</span>
+                </div>
+
+                <div class="card-actions justify-end mt-4">
+                    <a href="{% url 'booking_confirm_form' type.id %}" class="btn btn-primary">
+                        <i class="fas fa-calendar-check mr-2"></i>
+                        Đặt ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+
+        <div class="col-span-full">
+            <div class="alert alert-warning shadow-lg">
+                <div>
+                    <i class="fas fa-bed text-2xl"></i>
+                    <span>Rất tiếc, đã hết phòng trong khoảng thời gian bạn chọn.</span>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="{% url 'home' %}" class="btn btn-outline btn-lg">
+                    <i class="fas fa-search mr-2"></i>
+                    Tìm kiếm lại
+                </a>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

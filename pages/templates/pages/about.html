@@ -1,7 +1,233 @@
 {% extends "base.html" %}
-{% block title %}Về Dự Án{% endblock %}
+
+{% block title %}Về Chúng Tôi{% endblock %}
 
 {% block content %}
 
+
+
+<!-- 2. Hero Section (Đã refactor) -->
+<section class="hero min-h-[60vh] bg-gradient-to-br from-primary to-primary-focus">
+    <div class="hero-content text-center text-neutral-content">
+        <div class="max-w-xl">
+            <h1 class="mb-6 text-5xl md:text-6xl font-bold">
+                Hành Trình Của Chúng Tôi
+            </h1>
+            <p class="mb-5 text-xl md:text-2xl font-light">
+                Câu chuyện về The Sailing Bay
+            </p>
+            <div class="w-24 h-1 bg-accent mx-auto"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="py-20 px-6 bg-base-100">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                <h2 class="text-4xl font-bold text-base-content mb-6">Khởi Nguồn Từ Một Giấc Mơ</h2>
+                <p class="text-lg text-base-content/80 leading-relaxed mb-4">
+                    The Sailing Bay ra đời từ niềm đam mê tạo nên những trải nghiệm ven biển khó quên.
+                    Những gì bắt đầu từ một tầm nhìn nhỏ vào năm 2010 đã nở rộ thành một điểm đến
+                    hàng đầu chào đón du khách từ khắp nơi trên thế giới.
+                </p>
+                <p class="text-lg text-base-content/80 leading-relaxed mb-4">
+                    Những người sáng lập của chúng tôi tin rằng du lịch không chỉ là một kỳ nghỉ—đó
+                    phải là một hành trình biến đổi, kết nối bạn với thiên nhiên,
+                    chính mình và những người bạn quan tâm nhất.
+                    </"p>
+                <p class="text-lg text-base-content/80 leading-relaxed">
+                    Hôm nay, chúng tôi tiếp tục di sản đó bằng cách mang đến dịch vụ xuất sắc,
+                    chỗ ở tuyệt vời và những trải nghiệm chân thực làm cho mọi khoảnh khắc
+                    trở nên đáng nhớ.
+                </p>
+            </div>
+            <div class="relative">
+
+                <img src="https://images.unsplash.com/photo-1510073175147-9b83742c3472?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+                    alt="Toàn cảnh The Sailing Bay"
+                    class="rounded-lg shadow-2xl w-full h-auto object-cover aspect-[4/3]">
+                <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-accent/20 rounded-lg -z-10"></div>
+            </div>
+        </div>
+
+        <!-- 3. Milestones (Đã refactor dùng Stats component) -->
+        <div class="mt-20">
+            <h3 class="text-3xl font-bold text-base-content mb-12 text-center">Các Cột Mốc Của Chúng Tôi</h3>
+            <div class="stats stats-vertical lg:stats-horizontal shadow-xl w-full">
+
+                <div class="stat">
+                    <div class="stat-title">Thành lập</div>
+                    <div class="stat-value text-primary">2010</div>
+                    <div class="stat-desc">The Sailing Bay mở những cánh cửa đầu tiên.</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Mở rộng</div>
+                    <div class="stat-value text-accent">2015</div>
+                    <div class="stat-desc">Thêm khu Biệt thự & Beachfront Suites.</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Công nhận</div>
+                    <div class="stat-value text-primary">2018</div>
+                    <div class="stat-desc">Giành giải "Trải nghiệm Du lịch Xuất sắc".</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Hiện tại</div>
+                    <div class="stat-value text-accent">2025</div>
+                    <div class="stat-desc">Đạt 99% tỷ lệ khách hàng hài lòng.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission, Vision, Values Section (Đã refactor dùng Card) -->
+<section class="py-20 px-6 bg-base-200">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-base-content mb-16 text-center">Giá Trị Cốt Lõi Của Chúng Tôi</h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Mission Card -->
+            <div class="card bg-base-100 shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                <div class="card-body items-center text-center">
+                    <div class="avatar placeholder mb-4">
+                        <div class="bg-primary text-primary-content rounded-lg w-16 h-16">
+                            <i class="fas fa-compass text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title text-2xl font-bold">Sứ Mệnh</h3>
+                    <p class="text-base-content/80 leading-relaxed">
+                        Cung cấp những trải nghiệm ven biển phi thường, truyền cảm hứng,
+                        trẻ hóa và tạo ra những kỷ niệm lâu dài cho mỗi vị khách.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vision Card -->
+            <div class="card bg-base-100 shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                <div class="card-body items-center text-center">
+                    <div class="avatar placeholder mb-4">
+                        <div class="bg-accent text-accent-content rounded-lg w-16 h-16">
+                            <i class="fas fa-star text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title text-2xl font-bold">Tầm Nhìn</h3>
+                    <p class="text-base-content/80 leading-relaxed">
+                        Trở thành điểm đến ven biển được yêu thích và tin cậy nhất thế giới,
+                        nổi tiếng về sự xuất sắc, bền vững và lòng hiếu khách.
+                        </pos>
+                </div>
+            </div>
+
+            <!-- Values Card -->
+            <div class="card bg-base-100 shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                <div class="card-body items-center text-center">
+                    <div class="avatar placeholder mb-4">
+                        <div class="bg-primary text-primary-content rounded-lg w-16 h-16">
+                            <i class="fas fa-heart text-3xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="card-title text-2xl font-bold">Giá Trị</h3>
+                    <p class="text-base-content/80 leading-relaxed">
+                        <strong>Chân thực:</strong> Tôn vinh di sản. <strong>Xuất sắc:</strong> Theo đuổi sự hoàn hảo.
+                        <strong>Bền vững:</strong> Bảo vệ ngôi nhà của chúng ta.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Meet the Team Section (Đã refactor dùng Card) -->
+<section class="py-20 px-6 bg-base-100">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-base-content mb-4 text-center">Gặp Gỡ Đội Ngũ Lãnh Đạo</h2>
+        <p class="text-center text-base-content/70 text-lg mb-16 max-w-2xl mx-auto">
+            Những nhà lãnh đạo đầy nhiệt huyết, tận tâm mang đến lòng hiếu khách
+            đẳng cấp thế giới và những trải nghiệm khó quên.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-10">
+
+            <!-- Team Member 1 -->
+            <div class="card card-compact bg-base-200 shadow-md group">
+                <figure class="relative h-96 overflow-hidden">
+
+                    <img src="https://images.unsplash.com/photo-1573496359112-588b3f9c4f1c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                        alt="Margaret Chen"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </figure>
+                <div class="card-body text-center">
+                    <h3 class="text-2xl font-bold text-base-content mb-1">Margaret Trần</h3>
+                    <p class="text-accent font-semibold mb-3">Nhà Sáng Lập & CEO</p>
+                    <p class="text-base-content/70 italic mb-4 text-sm">
+                        "Chúng tôi không chỉ xây dựng khu nghỉ dưỡng; chúng tôi tạo ra những ốc đảo
+                        nơi khách hàng tìm thấy bản thân."
+                    </p>
+                    <div class="card-actions justify-center gap-3">
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-linkedin text-lg"></i></a>
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-twitter text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="card card-compact bg-base-200 shadow-md group">
+                <figure class="relative h-96 overflow-hidden">
+
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                        alt="David Martinez"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </figure>
+                <div class="card-body text-center">
+                    <h3 class="text-2xl font-bold text-base-content mb-1">David Nguyễn</h3>
+                    <p class="text-accent font-semibold mb-3">Giám đốc Vận hành (COO)</p>
+                    <p class="text-base-content/70 italic mb-4 text-sm">
+                        "Sự xuất sắc trong vận hành là nền tảng của những trải nghiệm
+                        khách hàng không thể nào quên."
+                    </p>
+                    <div class="card-actions justify-center gap-3">
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-linkedin text-lg"></i></a>
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-twitter text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="card card-compact bg-base-200 shadow-md group">
+                <figure class="relative h-96 overflow-hidden">
+
+                    <img src="https://images.unsplash.com/photo-1577219491135-ce399e30c639?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                        alt="Sofia Rossi"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </figure>
+                <div class="card-body text-center">
+                    <h3 class="text-2xl font-bold text-base-content mb-1">Sofia Lê</h3>
+                    <p class="text-accent font-semibold mb-3">Bếp Trưởng Điều Hành</p>
+                    <p class="text-base-content/70 italic mb-4 text-sm">
+                        "Mỗi bữa ăn là một câu chuyện—chúng tôi tôn vinh hương vị địa phương
+                        và cảm hứng toàn cầu."
+                    </p>
+                    <div class="card-actions justify-center gap-3">
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-linkedin text-lg"></i></a>
+                        <a href="#" class="text-primary hover:text-primary-focus transition"><i
+                                class="fab fa-twitter text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

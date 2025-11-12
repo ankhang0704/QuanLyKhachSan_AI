@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}
+Chỉnh sửa Hồ sơ
+{% endblock head_title %}
+
+{% block content %}
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content flex-col lg:flex-row-reverse w-full max-w-4xl">
+
+        <!-- Cột Văn bản Giới thiệu -->
+        <div class="text-center lg:text-left lg:pl-10">
+            <h1 class="text-5xl font-bold text-primary">Chỉnh sửa Hồ sơ</h1>
+            <p class="py-6 text-base-content/80">
+                Cập nhật thông tin cá nhân của bạn. Thông tin này sẽ được sử dụng cho các đặt phòng trong tương lai.
+            </p>
+        </div>
+
+        <!-- Cột Form -->
+        <div class="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
+            <div class="card-body">
+
+                <!-- Hiển thị lỗi chung (nếu có) -->
+                {% if form.non_field_errors %}
+                <div role="alert" class="alert alert-error mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2.95V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11.05a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.05z" />
+                    </svg>
+                    <div>
+                        <h3 class="font-bold">{% trans "Error" %}</h3>
+                        {% for error in form.non_field_errors %}
+                        <div class="text-xs">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- 
+                  QUAN TRỌNG: Thêm 'enctype="multipart/form-data"'
+                  để cho phép tải file (ảnh đại diện) lên.
+                -->
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="space-y-4">
+
+                        <!-- Trường Tên (First Name) -->
+                        <div class="form-control w-full">
+                            <label class="label" for="{{ form.first_name.id_for_label }}">
+                                <span class="label-text font-semibold">Tên (First Name)</span>
+                            </label>
+                            <input type="text" name="{{ form.first_name.name }}"
+                                value="{{ form.first_name.value|default:'' }}" id="{{ form.first_name.id_for_label }}"
+                                class="input input-bordered w-full {% if form.first_name.errors %}input-error{% endif %}" />
+                            {% if form.first_name.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.first_name.errors|first }}</span>
+                            </label>
+                            {% endif %}
+                        </div>
+
+                        <!-- Trường Họ (Last Name) -->
+                        <div class="form-control w-full">
+                            <label class="label" for="{{ form.last_name.id_for_label }}">
+                                <span class="label-text font-semibold">Họ (Last Name)</span>
+                            </label>
+                            <input type="text" name="{{ form.last_name.name }}"
+                                value="{{ form.last_name.value|default:'' }}" id="{{ form.last_name.id_for_label }}"
+                                class="input input-bordered w-full {% if form.last_name.errors %}input-error{% endif %}" />
+                            {% if form.last_name.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.last_name.errors|first }}</span>
+                            </label>
+                            {% endif %}
+                        </div>
+
+                        <!-- Trường Số điện thoại -->
+                        <div class="form-control w-full">
+                            <label class="label" for="{{ form.phone_number.id_for_label }}">
+                                <span class="label-text font-semibold">Số điện thoại</span>
+                            </label>
+                            <input type="tel" name="{{ form.phone_number.name }}"
+                                value="{{ form.phone_number.value|default:'' }}"
+                                id="{{ form.phone_number.id_for_label }}"
+                                class="input input-bordered w-full {% if form.phone_number.errors %}input-error{% endif %}" />
+                            {% if form.phone_number.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.phone_number.errors|first }}</span>
+                            </label>
+                            {% endif %}
+                        </div>
+
+                        <!-- Trường Ảnh đại diện -->
+                        <div class="form-control w-full">
+                            <label class="label" for="{{ form.profile_picture.id_for_label }}">
+                                <span class="label-text font-semibold">Thay đổi ảnh đại diện</span>
+                            </label>
+                            <!-- Sử dụng file-input của DaisyUI -->
+                            <input type="file" name="{{ form.profile_picture.name }}"
+                                id="{{ form.profile_picture.id_for_label }}"
+                                class="file-input file-input-bordered file-input-primary w-full {% if form.profile_picture.errors %}file-input-error{% endif %}" />
+
+                            <span class="text-xs text-base-content/60 mt-1">
+                                {% if user.profile_picture %}
+                                Đang hiển thị: {{ user.profile_picture.name|truncatechars:30 }}.
+                                {% endif %}
+                                Chọn file mới sẽ thay thế ảnh cũ.
+                            </span>
+                            {% if form.profile_picture.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.profile_picture.errors|first }}</span>
+                            </label>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <!-- Nút bấm -->
+                    <div class="form-control mt-6 space-y-2">
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        <a href="{% url 'profile' %}" class="btn btn-ghost">Hủy bỏ</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

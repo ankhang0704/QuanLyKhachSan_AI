@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Chi tiết đơn #{{ booking.id }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-16 max-w-5xl">
+    
+    <h1 class="text-4xl font-bold mb-2 text-base-content">Chi tiết đơn đặt phòng</h1>
+    <p class="text-xl text-base-content/70 mb-6">Mã đơn: <strong class="text-primary">#{{ booking.id }}</strong></p>
+
+    <div role="alert" class="alert alert-warning shadow-lg mb-8" id="status-alert" data-status="{{ booking.status }}"> <i
+            class="fas fa-question-circle text-2xl" id="status-icon"></i>
+        <div>
+            <h3 class="font-bold text-lg">Trạng thái hiện tại:</h3>
+            <p class="text-base-content/80">{{ booking.get_status_display }}</p>
+        </div>
+    </div>
+
+
+    <div class="card w-full bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body p-6 md:p-8">
+
+            <div class="flex justify-between items-start border-b border-base-200 pb-4 mb-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-base-content flex items-center gap-2">
+                        <i class="fas fa-bed text-primary"></i> {{ booking.room.room_type.name }}
+                    </h2>
+                    <p class="text-lg text-base-content/70 mt-1">Phòng số: <strong>{{ booking.room.room_number }}</strong></p>
+                </div>
+            </div>
+
+            <div class="stats stats-vertical lg:stats-horizontal shadow w-full bg-base-200 mb-6">
+                
+                <div class="stat">
+                    <div class="stat-title">Ngày Nhận Phòng</div>
+                    <div class="stat-value text-primary text-2xl md:text-3xl">{{ booking.check_in }}</div>
+                    <div class="stat-desc font-semibold">Ngày đặt: {{ booking.booked_at|date:"d/m/Y" }}</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-title">Ngày Trả Phòng</div>
+                    <div class="stat-value text-primary text-2xl md:text-3xl">{{ booking.check_out }}</div>
+                    <div class="stat-desc font-semibold">Thời gian: {{ booking.booked_at|date:"H:i" }}</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-title">Tổng Chi Phí</div>
+                    <div class="stat-value text-accent text-3xl md:text-4xl">{{ booking.total_price }} VNĐ</div>
+                    <div class="stat-desc font-semibold">Giá mỗi đêm: {{ booking.room.room_type.price_per_night }} VNĐ</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-base-content/80 mt-4">
+                
+                <div>
+                    <h3 class="font-semibold text-lg text-base-content mb-2 flex items-center gap-2">
+                        <i class="fas fa-file-invoice text-primary"></i> Chi tiết đơn hàng
+                    </h3>
+                    <ul class="list-none space-y-1 ml-2">
+                        <li>Mã đặt phòng: <strong>#{{ booking.id }}</strong></li>
+                        <li>Ngày đặt: {{ booking.booked_at|date:"d/m/Y H:i" }}</li>
+                        <li>Khách hàng: {{ booking.user.username }}</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-base-content mb-2 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-accent"></i> Lưu ý quan trọng
+                    </h3>
+                    <ul class="list-none space-y-1 ml-2">
+                        <li>Giờ nhận phòng là 14:00.</li>
+                        <li>Chính sách hủy phòng được áp dụng theo ngày đặt.</li>
+                        <li>Vui lòng mang theo CMND/CCCD khi làm thủ tục.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card-actions justify-end mt-8 pt-4 border-t border-base-200">
+                
+                <a href="{% url 'my_bookings' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                </a>
+                
+                {% if booking.is_cancellable %}
+                <a href="{% url 'booking_cancel' booking.id %}" class="btn btn-error">
+                    <i class="fas fa-ban"></i> Yêu cầu hủy phòng
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const statusAlert = document.getElementById('status-alert');
+        const statusIcon = document.getElementById('status-icon');
+
+        if (statusAlert) {
+            const status = statusAlert.getAttribute('data-status');
+
+            // Map trạng thái Django sang class CSS và Icon
+            const statusMap = {
+                'booked': { class: 'alert-success', icon: 'fas fa-check-circle' },
+                'checked_in': { class: 'alert-info', icon: 'fas fa-door-open' },
+                'checked_out': { class: 'alert-ghost', icon: 'fas fa-door-closed' },
+                'canceled': { class: 'alert-error', icon: 'fas fa-times-circle' }
+                // Mặc định là alert-warning, fas fa-question-circle (đã thiết lập trong HTML)
+            };
+
+            const config = statusMap[status] || statusMap['default'];
+
+            // 1. Gỡ bỏ class mặc định và thêm class mới
+            statusAlert.classList.remove('alert-warning');
+            if (config.class) {
+                statusAlert.classList.add(config.class);
+            }
+
+            // 2. Cập nhật Icon
+            if (statusIcon && config.icon) {
+                // Xóa tất cả các class fas/far/fal trước khi thêm class mới
+                statusIcon.className = '';
+                statusIcon.classList.add(...config.icon.split(' '));
+            }
+
+            // 3. Logic Nút Hủy (Tùy chọn)
+            const cancelButton = document.getElementById('cancel-button');
+            if (cancelButton && (status === 'checked_out' || status === 'canceled' || status === 'checked_in')) {
+                // Ẩn nút nếu trạng thái là checked_out, canceled, hoặc checked_in
+                // Vì nếu đang ở thì chỉ cần nút Hỗ trợ (không cần nút Hủy)
+                cancelButton.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Dịch vụ & Tiện ích
+{% endblock title %}
+
+{% block content %}
+
+<section class="hero min-h-[60vh] bg-gradient-to-br from-primary to-primary-focus">
+    <div class="hero-content text-center text-neutral-content">
+        <div class="max-w-xl">
+            <h1 class="mb-6 text-5xl md:text-6xl font-bold">
+                Dịch Vụ & Tiện Ích
+            </h1>
+            <p class="mb-5 text-xl md:text-2xl font-light">
+                Tận hưởng trải nghiệm đẳng cấp với các tiện ích sang trọng và dịch vụ cá nhân hóa.
+            </p>
+            <div class="w-24 h-1 bg-accent mx-auto"></div>
+        </div>
+    </div>
+</section>
+
+
+<div class="container mx-auto px-4 py-16 max-w-7xl">
+
+    <h2 class="text-3xl font-bold text-center mb-10 text-base-content">Danh mục dịch vụ</h2>
+
+    <div class="flex justify-center mb-6">
+        <div role="tablist" class="tabs tabs-boxed tabs-lg shadow-lg" id="service-tab-container">
+
+            {% for category_name, service_list in categorized_services.items %}
+            {% with category_id=category_name|slugify|slice:":20" %}
+            <a role="tab" class="tab tab-lg {% if forloop.first %}tab-active{% endif %}"
+                data-tab-target="#tab-content-{{ category_id }}">
+                {{ category_name }}
+            </a>
+            {% endwith %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div class="mt-6">
+        {% for category_name, service_list in categorized_services.items %}
+        {% with category_id=category_name|slugify|slice:":20" %}
+
+ <div id="tab-content-{{ category_id }}" 
+     class="tab-content-panel {% if not forloop.first %}hidden{% endif %}">
+    
+    <div class="flex justify-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full max-w-7xl"> 
+            {% for service in service_list %}
+            <div class="card bg-base-100 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 flex flex-col">
+                {% with main_img_url=service.get_main_image %}
+                <figure class="h-56">
+                    {% if main_img_url %}
+                    <img src="{{ main_img_url }}" alt="{{ service.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <img src="https://via.placeholder.com/400x300.png?text={{ service.name|urlencode }}"
+                        alt="Chưa có ảnh" class="w-full h-full object-cover">
+                    {% endif %}
+                </figure>
+                {% endwith %}
+
+                <div class="card-body p-5 flex flex-col justify-between"> 
+                    <div>
+                        <h3 class="card-title text-xl font-bold">{{ service.name }}</h3>
+                        
+                        {% if service.description %}
+                        <p class="text-base-content/70 text-sm mt-2 mb-4">
+                            {{ service.description|truncatewords:15 }}
+                        </p>
+                        {% endif %}
+                        
+                        <div class="text-sm space-y-2 mt-2">
+                            <p class="flex items-center gap-2 text-base-content/80">
+                                <i class="fas fa-clock w-4 text-center text-primary"></i> 
+                                <strong>Giờ mở:</strong> {{ service.opening_hours|default:"Cả ngày" }}
+                            </p>
+                            <p class="flex items-center gap-2 text-base-content/80">
+                                <i class="fas fa-money-bill-wave w-4 text-center text-primary"></i> 
+                                <strong>Chi phí:</strong> {{ service.price_info|default:"Miễn phí / Liên hệ" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card-actions justify-end mt-4 pt-2 border-t border-base-200">
+                        <a href="{% url 'service_detail' service.slug %}" class="btn btn-sm btn-primary">
+                            Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+    {% if not categorized_services %}
+    <div class="alert alert-info shadow-lg max-w-lg mx-auto mt-10">
+        <div>
+            <i class="fas fa-info-circle text-2xl"></i>
+            <span>Hiện tại chưa có dịch vụ nào để hiển thị. Vui lòng quay lại sau.</span>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
+
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabContainer = document.getElementById('service-tab-container');
+        if (!tabContainer) return; // Chỉ chạy nếu có tab
+
+        const tabs = tabContainer.querySelectorAll('.tab');
+        const tabPanels = document.querySelectorAll('.tab-content-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // 1. Tắt active tất cả các tab
+                tabs.forEach(t => t.classList.remove('tab-active'));
+
+                // 2. Kích hoạt tab được nhấp
+                e.target.classList.add('tab-active');
+
+                // 3. Lấy ID của nội dung cần hiển thị (từ data-tab-target)
+                const targetId = e.target.getAttribute('data-tab-target');
+
+                // 4. Ẩn tất cả các panel
+                tabPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                });
+
+                // 5. Hiển thị panel tương ứng
+                const activePanel = document.querySelector(targetId);
+                if (activePanel) {
+                    activePanel.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Kích hoạt tab đầu tiên (nếu có)
+        if (tabs.length > 0) {
+            tabs[0].click();
+        }
+    });
+</script>
+{% endblock %}

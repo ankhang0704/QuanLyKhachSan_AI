@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Xác nhận Hủy phòng
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="container mx-auto px-4 py-16 max-w-lg">
+
+    <h1 class="text-4xl font-bold mb-6 text-base-content flex items-center justify-center gap-3">
+        <i class="fas fa-exclamation-triangle text-error"></i>
+        Xác nhận Yêu cầu Hủy phòng
+    </h1>
+
+    <div role="alert" class="alert alert-error shadow-lg mb-8">
+        <i class="fas fa-exclamation-circle text-2xl"></i>
+        <div>
+            <h3 class="font-bold text-lg">CẢNH BÁO: KHÔNG THỂ HOÀN TÁC!</h3>
+            <p class="text-error-content/90">Bạn có chắc chắn muốn hủy đơn đặt phòng này không? Hành động này sẽ hủy
+                vĩnh viễn và có thể phát sinh phí phạt.</p>
+        </div>
+    </div>
+
+    <div class="card w-full bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body p-6">
+            <h2 class="card-title text-2xl font-bold text-base-content flex items-center">
+                <i class="fas fa-bed text-primary mr-2"></i> {{ booking.room.room_type.name }}
+            </h2>
+
+            <ul class="space-y-2 text-base-content/80 mt-4">
+                <li class="flex justify-between">
+                    <span>Mã đơn:</span>
+                    <strong>#{{ booking.id }}</strong>
+                </li>
+                <li class="flex justify-between border-t border-base-200 pt-2">
+                    <span>Ngày nhận phòng:</span>
+                    <strong>{{ booking.check_in }}</strong>
+                </li>
+                <li class="flex justify-between border-b border-base-200 pb-2">
+                    <span>Ngày trả phòng:</span>
+                    <strong>{{ booking.check_out }}</strong>
+                </li>
+                <li class="flex justify-between font-bold pt-2">
+                    <span>Tổng chi phí:</span>
+                    <strong class="text-accent">{{ booking.total_price }} VNĐ</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-4 p-4 text-center border border-warning rounded-lg bg-warning/10">
+        <p class="text-warning font-bold">
+            <i class="fas fa-gavel mr-2"></i> CHÚ Ý: Phí phạt hủy phòng có thể được áp dụng.
+        </p>
+        <p class="text-sm text-base-content/70 mt-1">
+            Vui lòng kiểm tra email xác nhận đặt phòng của bạn để xem chi tiết chính sách hủy.
+        </p>
+    </div>
+
+    <form method="POST" class="mt-8 flex gap-4 justify-center">
+        {% csrf_token %}
+
+        <button type="submit" class="btn btn-error btn-lg">
+            <i class="fas fa-ban mr-2"></i> Vâng, Xác nhận Hủy
+        </button>
+
+        <a href="{% url 'my_booking_detail' booking_id=booking.id %}" class="btn btn-neutral btn-outline btn-lg">
+            <i class="fas fa-arrow-left mr-2"></i> Không, Quay lại
+        </a>
+    </form>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Đặt phòng Thành công!
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-16 max-w-2xl text-center">
+
+    <div role="alert"
+        class="alert alert-success shadow-xl mb-10 p-8 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+        <i class="fas fa-check-circle text-4xl"></i>
+        <div>
+            <h1 class="text-3xl font-bold text-success-content">Đặt phòng Thành công!</h1>
+            <p class="text-success-content/80 mt-1">Cảm ơn bạn đã chọn The Sailing Bay. Đơn đặt phòng của bạn đã được
+                xác nhận.</p>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl p-6 md:p-8 border border-base-300 text-left">
+        <h3 class="text-2xl font-bold mb-4 text-base-content">
+            Chi tiết đơn đặt của bạn:
+        </h3>
+
+        <ul class="space-y-3 text-lg text-base-content/80">
+            <li class="flex justify-between border-b border-base-200 pb-2">
+                <span><i class="fas fa-id-badge text-primary mr-2"></i> Mã đặt phòng:</span>
+                <strong class="text-primary">{{ booking.id }}</strong>
+            </li>
+
+            <li class="flex justify-between border-b border-base-200 pb-2">
+                <span><i class="fas fa-bed text-primary mr-2"></i> Loại phòng:</span>
+                <strong>{{ booking.room.room_type.name }}</strong>
+            </li>
+
+            {% if booking.room.room_number %}
+            <li class="flex justify-between border-b border-base-200 pb-2">
+                <span><i class="fas fa-hashtag text-primary mr-2"></i> Phòng số:</span>
+                <strong>{{ booking.room.room_number }}</strong>
+            </li>
+            {% endif %}
+
+            <li class="flex justify-between border-b border-base-200 pb-2">
+                <span><i class="fas fa-calendar-alt text-primary mr-2"></i> Ngày nhận:</span>
+                <strong>{{ booking.check_in }}</strong>
+            </li>
+            <li class="flex justify-between border-b border-base-200 pb-2">
+                <span><i class="fas fa-calendar-check text-primary mr-2"></i> Ngày trả:</span>
+                <strong>{{ booking.check_out }}</strong>
+            </li>
+
+            <li class="flex justify-between pt-3 font-extrabold text-xl">
+                <span>Tổng chi phí:</span>
+                <strong class="text-accent">{{ booking.total_price }} VNĐ</strong>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="mt-8 text-base-content/80">
+        <p>
+            <i class="fas fa-envelope-open-text text-accent mr-2"></i>
+            Chúng tôi đã gửi email xác nhận chi tiết tới **{{ booking.user.email }}**.
+            Vui lòng kiểm tra hộp thư đến của bạn.
+        </p>
+    </div>
+
+    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'my_bookings' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-history mr-2"></i>
+            Xem tất cả đơn đặt phòng của tôi
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline btn-lg">
+            <i class="fas fa-home mr-2"></i>
+            Quay lại trang chủ
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Thư viện ảnh - The Sailing Bay
+{% endblock title %}
+
+{% block content %}
+
+
+
+<div class="container mx-auto px-4 py-16 max-w-7xl">
+
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-base-content">Thư Viện Ảnh</h1>
+        <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+            Khám phá vẻ đẹp và sự sang trọng của The Sailing Bay
+        </p>
+    </div>
+
+    <div class="flex justify-center mb-8">
+        <div role="tablist" class="tabs tabs-boxed tabs-lg shadow-lg" id="tab-nav-container">
+
+            <a role="tab" class="tab tab-active" data-target="#content-all">Tất cả</a>
+
+            <a role="tab" class="tab" data-target="#content-rooms">Phòng ốc</a>
+
+            {% for category_name, image_list in service_galleries.items %}
+            {% with category_slug=category_name|slugify|slice:":20" %}
+            <a role="tab" class="tab" data-target="#content-{{ category_slug }}">
+                {{ category_name }}
+            </a>
+            {% endwith %}
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div class="tab-content-wrapper">
+
+        <div id="content-all" class="tab-content-panel block">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for img in all_images %}
+                <figure class="relative aspect-square overflow-hidden rounded-lg shadow-md cursor-pointer group"
+                    onclick="openImageModal('{{ img.image.url }}')">
+                    <img src="{{ img.image.url }}" alt="{{ img.caption|default:'Gallery Image' }}"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div
+                        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300">
+                    </div>
+                </figure>
+                {% empty %}
+                <p class="col-span-full text-center text-base-content/70 alert alert-info">Chưa có ảnh nào trong thư
+                    viện.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="content-rooms" class="tab-content-panel hidden">
+            <h2 class="text-2xl font-semibold mb-4 text-base-content">Hình ảnh Phòng ốc</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for img in room_images %}
+                <figure class="relative aspect-square overflow-hidden rounded-lg shadow-md cursor-pointer group"
+                    onclick="openImageModal('{{ img.image.url }}')">
+                    <img src="{{ img.image.url }}" alt="{{ img.room_type.name }}"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div
+                        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-end p-3">
+                        <span
+                            class="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {{ img.room_type.name }}
+                        </span>
+                    </div>
+                </figure>
+                {% empty %}
+                <p class="col-span-full text-center text-base-content/70 alert alert-info">Chưa có ảnh phòng ốc nào.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% for category_name, image_list in service_galleries.items %}
+        {% with category_slug=category_name|slugify|slice:":20" %}
+        <div id="content-{{ category_slug }}" class="tab-content-panel hidden">
+            <h2 class="text-2xl font-semibold mb-4 text-base-content">{{ category_name }}</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for img in image_list %}
+                <figure class="relative aspect-square overflow-hidden rounded-lg shadow-md cursor-pointer group"
+                    onclick="openImageModal('{{ img.image.url }}')">
+                    <img src="{{ img.image.url }}" alt="{{ img.service.name }}"
+                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                    <div
+                        class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-end p-3">
+                        <span
+                            class="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {{ img.service.name }}
+                        </span>
+                    </div>
+                </figure>
+                {% empty %}
+                <p class="col-span-full text-center text-base-content/70 alert alert-info">Chưa có ảnh cho dịch vụ
+                    {{ category_name }}.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+{{ block.super }}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabContainer = document.getElementById('tab-nav-container');
+        const tabs = tabContainer.querySelectorAll('.tab');
+        const tabPanels = document.querySelectorAll('.tab-content-panel');
+
+        // Chỉ chạy logic nếu có tabs và panels
+        if (tabs.length === 0 || tabPanels.length === 0) return;
+
+        function handleTabSwitch(targetElement) {
+            // 1. Tắt active tất cả các tab
+            tabs.forEach(t => t.classList.remove('tab-active'));
+
+            // 2. Kích hoạt tab được nhấp
+            targetElement.classList.add('tab-active');
+
+            // 3. Lấy ID của nội dung cần hiển thị (ví dụ: #content-rooms)
+            const targetId = targetElement.getAttribute('data-target');
+
+            // 4. Ẩn tất cả các panel
+            tabPanels.forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('block');
+            });
+
+            // 5. Hiển thị panel tương ứng
+            const activePanel = document.querySelector(targetId);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+                activePanel.classList.add('block');
+            }
+        }
+
+        // Gán sự kiện click cho các nút tab
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+                handleTabSwitch(e.target);
+            });
+        });
+
+        // Khởi tạo trạng thái ban đầu: Kích hoạt tab đầu tiên khi tải trang
+        const firstTab = document.querySelector('.tab[data-target="#content-all"]');
+        if (firstTab) {
+            handleTabSwitch(firstTab);
+        }
+    });
+</script>
+{% endblock %}
