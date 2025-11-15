@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{{ post.title }}{% endblock head_title %}
+
+{% block content %}
+<!-- 1. Vỏ bọc bg-base-200 đồng bộ -->
+<div class="min-h-screen bg-base-200 py-12 px-4">
+    <!-- 2. Giới hạn chiều rộng container, bao gồm cả nút "Quay lại" -->
+    <div class="container mx-auto max-w-4xl">
+
+        <a href="{% url 'blog_list' %}" class="btn btn-ghost mb-4">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại tin tức
+        </a>
+
+        <!-- 3. Bọc nội dung bài viết trong một Card -->
+        <div class="card bg-base-100 shadow-xl overflow-hidden">
+            <!-- 4. Di chuyển ảnh vào trong card, làm ảnh bìa -->
+            <figure class="w-full h-64 md:h-96">
+                <img src="{{ post.image.url }}" class="w-full h-full object-cover" alt="{{ post.title }}">
+            </figure>
+
+            <div class="card-body p-6 md:p-10">
+                <!-- 5. Tiêu đề và ngày tháng -->
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-primary">{{ post.title }}</h1>
+                <p class="text-base-content/60 mb-6">
+                    <i class="far fa-calendar"></i> {{ post.created_at|date:"d/m/Y" }}
+                </p>
+
+                <!-- 
+                  6. Sử dụng class 'prose' của Tailwind để tự động định dạng đẹp
+                  - max-w-none: để nó fill chiều rộng của card
+                  - prose-headings:text-primary: Tự động đổi màu các tiêu đề (h2, h3) trong bài viết
+                -->
+                <div class="prose prose-lg lg:prose-xl max-w-none prose-headings:text-primary">
+                    {{ post.content|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

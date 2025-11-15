@@ -217,60 +217,11 @@
         <p class="text-xl mb-10 opacity-95">
             Giảm giá 20% cho khách đặt phòng sớm. Ưu đãi có hạn đến hết ngày 31/12.
         </p>
-        <button class="btn btn-neutral btn-lg text-lg transition-transform transform hover:scale-105">
-            Nhận Ưu Đãi
-        </button>
+        <a href="{% url 'offers' %}" class="btn btn-neutral btn-lg text-lg transition-transform transform hover:scale-105">
+            Giảm giá 20% cho khách đặt phòng sớm. Ưu đãi có hạn đến hết ngày 31/12.
+        </a>
     </div>
 </section>
-
-<script>
-    // Chỉ chạy script khi DOM đã sẵn sàng (đã được bọc trong base.html)
-    document.addEventListener("DOMContentLoaded", function () {
-
-        // Đặt ngày tối thiểu là hôm nay
-        const today = new Date().toISOString().split('T')[0];
-        const checkinInput = document.getElementById('checkin');
-        const checkoutInput = document.getElementById('checkout');
-
-        if (checkinInput) {
-            checkinInput.setAttribute('min', today);
-        }
-        if (checkoutInput) {
-            checkoutInput.setAttribute('min', today);
-        }
-
-        // Cập nhật logic cho checkout date khi checkin thay đổi
-        if (checkinInput && checkoutInput) {
-            checkinInput.addEventListener('change', function () {
-                // Khi chọn ngày nhận phòng, ngày trả phòng phải sau ngày đó
-                const checkinDate = checkinInput.value;
-                checkoutInput.setAttribute('min', checkinDate);
-                // Nếu ngày trả phòng cũ trước ngày nhận phòng mới, reset nó
-                if (checkoutInput.value < checkinDate) {
-                    checkoutInput.value = checkinDate;
-                }
-            });
-        }
-
-        // Chức năng nút tìm kiếm (Sử dụng ID #search-btn)
-        const searchBtn = document.getElementById('search-btn');
-
-        if (searchBtn) {
-            searchBtn.addEventListener('click', function () {
-                const checkin = checkinInput.value;
-                const checkout = checkoutInput.value;
-                if (checkin && checkout) {
-                    alert(`Đang tìm phòng trống từ ${checkin} đến ${checkout}`);
-                    // TODO: Chuyển hướng đến trang tìm kiếm
-                    // window.location.href = `/search?checkin=${checkin}&checkout=${checkout}`;
-                } else {
-                    alert('Vui lòng chọn cả ngày nhận phòng và ngày trả phòng');
-                }
-            });
-        }
-    });
-</script>
-
 
 
 {% endblock %}

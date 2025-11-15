@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'chatbot.apps.ChatbotConfig',
     'services.apps.ServicesConfig',
+    'marketing.apps.MarketingConfig',
+    'blog.apps.BlogConfig',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

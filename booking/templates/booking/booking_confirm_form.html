@@ -79,6 +79,18 @@ Xác nhận Đặt phòng - {{ room_type.name }}
             </div>
         </div>
 
+        <!-- 
+          FIX:
+          1. Thêm 'items-start' để căn icon lên trên cùng với văn bản (thay vì ở giữa).
+          2. Thêm 'text-xl' và 'shrink-0' cho icon để có kích thước phù hợp.
+          3. Xóa các ngắt dòng cứng trong <span> để văn bản tự động ngắt dòng.
+        -->
+        <div role="alert" class="alert alert-info mt-4 items-start">
+            <i class="fas fa-info-circle text-xl shrink-0"></i>
+            <span>Lưu ý: Nếu bạn đang đặt theo chương trình khuyến mãi, giá cuối cùng sẽ được nhân viên của chúng tôi
+                xác nhận và điều chỉnh khi check-in.</span>
+        </div>
+
         <div class="mt-10 pt-6 border-t border-base-300">
             <form method="POST" class="flex flex-col sm:flex-row gap-4 justify-center">
                 {% csrf_token %}

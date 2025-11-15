@@ -4,6 +4,24 @@ module.exports = {
         './templates/**/*.html', // Quét tất cả file HTML trong template
         './**/templates/**/*.html', // Quét tất cả template trong các app
     ],
+    safelist: [
+        'chat',
+        'chat-start',
+        'chat-end',
+        'chat-top',
+        'chat-bubble',
+        'chat-bubble-primary',
+        'chat-bubble-info',
+        'chat-image',
+        'avatar',
+        'rounded-2xl', // Đây là class bị thiếu khiến vỡ layout
+        'shadow-sm', // Đây là class bị thiếu khiến vỡ layout
+        'grid',
+        'place-items-center',
+        'loading-dots',
+        'items-start',
+        // Thêm bất kỳ class nào bạn tạo bằng JS mà Tailwind không thấy
+    ],
     theme: {
         extend: {
             colors: {

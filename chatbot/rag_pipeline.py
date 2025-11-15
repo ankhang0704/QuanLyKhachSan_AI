@@ -1,119 +1,135 @@
 import os
 from django.conf import settings
-from langchain_google_genai import ChatGoogleGenerativeAI
+
+# --- CÁC THƯ VIỆN LOCAL ---
+from langchain_community.llms.llamacpp import LlamaCpp
 from langchain_community.vectorstores import FAISS
-# Sửa lỗi 1 (lỗi đọc file .txt):
+from langchain_huggingface import HuggingFaceEmbeddings # Dùng cái này thay Google
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-# === SỬA LỖI IMPORT (LỖI 2) ===
-# Xóa import cũ: from langchain_community.embeddings import HuggingFaceEmbeddings
-# Thêm import mới:
-from langchain_huggingface import HuggingFaceEmbeddings
-# === KẾT THÚC IMPORT ===
-
-
-# 1. Cấu hình API Key (Lấy từ Google AI Studio)
-os.environ["GOOGLE_API_KEY"] = "AIzaSyAMAuRPaz4gjWiBoaViItzj8Y7gkdGiBqw" 
-
-# 2. Định nghĩa các đường dẫn
+# 1. Định nghĩa các đường dẫn
 BASE_DIR = settings.BASE_DIR
 KNOWLEDGE_BASE_DIR = BASE_DIR / "knowledge_base"
 FAISS_INDEX_DIR = BASE_DIR / "faiss_index"
+# Đảm bảo tên file model khớp 100% với file bạn tải về
+MODEL_PATH = os.path.join(settings.BASE_DIR, "models", "qwen1_5-1_8b-chat-q4_k_m.gguf")
 
-# Biến toàn cục để giữ instance của RAG Chain
+# Biến toàn cục để giữ instance
 rag_chain_instance = None
 
-def initialize_rag_chain():
+# --- HÀM 1: TẢI HOẶC TẠO VECTOR STORE (OFFLINE) ---
+def load_vector_store():
+    # Sử dụng model nhúng Offline (Miễn phí, chạy trên máy)
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
+    if os.path.exists(FAISS_INDEX_DIR):
+        print("Đang tải Vector Store từ file (Offline)...")
+        vector_store = FAISS.load_local(
+            FAISS_INDEX_DIR, 
+            embeddings, 
+            allow_dangerous_deserialization=True 
+        )
+    else:
+        print("Chưa có Vector Store. Đang tạo mới (Offline)...")
+        # Đọc file .txt với encoding utf-8
+        loader = DirectoryLoader(
+            KNOWLEDGE_BASE_DIR, 
+            glob="*.txt", 
+            loader_cls=TextLoader, 
+            loader_kwargs={"encoding": "utf-8"}
+        )
+        documents = loader.load()
+        
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        texts = text_splitter.split_documents(documents)
+        
+        vector_store = FAISS.from_documents(texts, embeddings)
+        vector_store.save_local(FAISS_INDEX_DIR)
+        print(f"Đã tạo Vector Store tại {FAISS_INDEX_DIR}")
+        
+    return vector_store
 
-    # Sử dụng biến toàn cục
+# --- HÀM 2: KHỞI TẠO MODEL & CHAIN ---
+def initialize_rag_chain():
     global rag_chain_instance
     if rag_chain_instance is not None:
         return rag_chain_instance
-    #  Hàm tạo mới hoặc tải Vector Store
-    def load_vector_store():
-        # === SỬA LỖI CRASH (LỖI 1) ===
-        # Dùng đúng tên model và đúng tham số "model_name"
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        
-        if os.path.exists(FAISS_INDEX_DIR):
-            print("Đang tải Vector Store từ file...")
-            vector_store = FAISS.load_local(
-                FAISS_INDEX_DIR, 
-                embeddings, 
-                allow_dangerous_deserialization=True 
-            )
-        else:
-            print("Chưa có Vector Store. Đang tạo mới...")
-            # Sửa lỗi đọc file .txt (từ lần trước)
-            loader = DirectoryLoader(
-                KNOWLEDGE_BASE_DIR, 
-                glob="*.txt", 
-                loader_cls=TextLoader, 
-                loader_kwargs={"encoding": "utf-8"}
-            )
-            documents = loader.load()
-            
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-            texts = text_splitter.split_documents(documents)
-            
-            vector_store = FAISS.from_documents(texts, embeddings)
-            
-            vector_store.save_local(FAISS_INDEX_DIR)
-            print(f"Đã tạo và lưu Vector Store tại {FAISS_INDEX_DIR}")
-            
-        return vector_store
 
-    # 4. Tải LLM (Gemini) và tạo "Chain" mới
+    print(f"Đang khởi tạo Local AI Model từ: {MODEL_PATH} ...")
+    
+    # Kiểm tra xem file model có tồn tại không
+    if not os.path.exists(MODEL_PATH):
+        print(f"LỖI: Không tìm thấy file model tại {MODEL_PATH}")
+        return None
+
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-flash-lite-latest", temperature=0.7)
-        vector_store = load_vector_store() # Gọi hàm
+        # --- 2. KHỞI TẠO LLAMACPP (Thay thế CTransformers) ---
+        # LlamaCpp tự động nhận diện model (Qwen, Llama, v.v.) nên không cần model_type
+        llm = LlamaCpp(
+            model_path=MODEL_PATH,
+            temperature=0.3,
+            max_tokens=512,
+            n_ctx=1024,       # Độ dài ngữ cảnh
+            top_p=1,
+            verbose=True,     # Hiện log chi tiết để debug
+            n_gpu_layers=0    # Để 0 nếu chạy CPU. Nếu có card rời NVIDIA, tăng lên (vd: 20)
+        )
+        # -----------------------------------------------------
+
+        vector_store = load_vector_store()
+        retriever = vector_store.as_retriever(search_kwargs={"k": 3})  # Lấy 1 đoạn gần nhất
+
+        # --- Tạo Prompt Template --- Hỗ trợ tiếng Việt
+        template = """<|im_start|>system
+        Bạn là nhân viên lễ tân của khách sạn The Sailing Bay.
+        Nhiệm vụ: Trả lời câu hỏi của khách dựa trên thông tin được cung cấp (Context).
         
-        retriever = vector_store.as_retriever() # Biến vector_store thành "Bộ tìm kiếm"
-
-        template = """Bạn là một trợ lý AI hữu ích cho khách sạn The Sailing Bay.
-        Hãy sử dụng các thông tin được cung cấp sau đây để trả lời câu hỏi của người dùng.
-        Nếu thông tin không có trong nội dung được cung cấp, hãy nói rằng bạn không biết câu trả lời.
-        Hãy trả lời một cách thân thiện và chuyên nghiệp.
-
-        Thông tin:
+        YÊU CẦU BẮT BUỘC:
+        1. Trả lời hoàn toàn bằng TIẾNG VIỆT.
+        2. Văn phong: Thân thiện, ngắn gọn, xưng 'em' và gọi khách là 'quý khách'.
+        3. Nếu thông tin không có trong Context, hãy nói: "Dạ em xin lỗi, hiện em chưa có thông tin về vấn đề này ạ."
+        <|im_end|>
+        <|im_start|>user
+        Thông tin hỗ trợ (Context):
         {context}
-
-        Câu hỏi:
-        {question}
-
-        Câu trả lời:"""
+        
+        Câu hỏi của khách: {question}
+        <|im_end|>
+        <|im_start|>assistant
+        """
+        
         prompt = ChatPromptTemplate.from_template(template)
 
-        # Chain (dùng |)
         rag_chain = (
             {"context": retriever, "question": RunnablePassthrough()}
             | prompt
             | llm
             | StrOutputParser()
         )
-        # Lưu instance vào biến toàn cục
+
         rag_chain_instance = rag_chain
-        print("Đã khởi tạo RAG Chain thành công.")
+        print("Local AI (LlamaCpp) đã sẵn sàng!")
         return rag_chain_instance
+
     except Exception as e:
-        print(f"Lỗi khi tải mô hình Gemini hoặc tạo Chain: {e}")
-        rag_chain_instance = None
+        print(f"LỖI KHỞI TẠO LOCAL AI: {e}")
         return None
 
-# 5. Hàm chính để gọi từ Django
+# --- HÀM 3: GỌI TỪ VIEW ---
 def get_chatbot_response(question):
-
     rag_chain = initialize_rag_chain()
+    
     if not rag_chain:
-        return "Lỗi: Chatbot chưa được khởi tạo đúng cách. Vui lòng kiểm tra API Key hoặc log khởi động."
+        return "Lỗi: Không thể khởi tạo AI Model. Vui lòng kiểm tra file model trong thư mục."
         
     try:
-        response_string = rag_chain.invoke(question)
-        return response_string
+        # Invoke chain
+        response = rag_chain.invoke(question)
+        return response
     except Exception as e:
-        print(f"Lỗi RAG: {e}")
-        return "Xin lỗi, tôi đang gặp sự cố. Vui lòng thử lại sau."
+        print(f"Lỗi khi trả lời: {e}")
+        return "Xin lỗi, tôi đang gặp sự cố hệ thống."

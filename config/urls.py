@@ -32,6 +32,8 @@ urlpatterns = [
     path('user/', include('users.urls')),
     path('api/', include('chatbot.urls')),
     path('services/', include('services.urls')),
+    path('marketing/',include('marketing.urls')),
+    path('blog/',include('blog.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()

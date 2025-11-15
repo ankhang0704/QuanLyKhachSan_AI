@@ -143,6 +143,74 @@
                 opacity: 1;
             }
         }
+
+        /* Khu vực tin nhắn - sử dụng CSS variables của daisyUI */
+        #chat-messages {
+            /* Màu nền sẽ được đặt bằng class bg-base-200 */
+            scrollbar-width: thin;
+            scrollbar-color: hsl(var(--p)) hsl(var(--b2));
+            /* Màu chính (primary) và màu nền (base-200) */
+        }
+
+        /* Webkit (Chrome, Safari) scrollbar */
+        #chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat-messages::-webkit-scrollbar-track {
+            background: hsl(var(--b2));
+            /* Màu nền base-200 */
+            border-radius: 10px;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background-color: hsl(var(--p));
+            /* Màu chính (primary) */
+            border-radius: 10px;
+            border: 2px solid hsl(var(--b2));
+        }
+
+        /* Tùy chỉnh bong bóng chat của Bot (User sẽ dùng chat-bubble-primary) */
+        .chat-start .chat-bubble {
+            background-color: hsl(var(--b3));
+            /* Màu base-300 (xám nhạt/tối) */
+            color: hsl(var(--bc));
+            /* Màu chữ base-content */
+            /* GỠ BỎ white-space: pre-wrap; */
+            overflow-wrap: break-word;
+        }
+
+        .chat-end .chat-bubble {
+            /* GỠ BỎ white-space: pre-wrap; */
+            overflow-wrap: break-word;
+        }
+
+        /* Nút mở Chat (ví dụ) - sử dụng màu primary */
+        #open-chat-bubble {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            background-color: hsl(var(--p));
+            color: hsl(var(--pc));
+            /* Màu chữ của Primary */
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        #open-chat-bubble:hover {
+            background-color: hsl(var(--pf));
+            /* Màu Primary focus/hover */
+            transform: scale(1.05);
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -158,15 +226,35 @@
                     <label tabindex="0" class="btn btn-ghost btn-circle">
                         <i class="fas fa-bars text-xl"></i>
                     </label>
+                    <!-- Menu di động (dropdown) -->
                     <ul tabindex="0"
                         class="menu menu-sm dropdown-content mt-3 z-[51] p-2 shadow bg-base-100 rounded-box w-52">
                         <li><a href="{% url 'home' %}"><i class="fas fa-home w-4"></i> Trang chủ</a></li>
-                        <li><a href="{% url 'room_list' %}"><i class="fas fa-bed w-4"></i> Phòng</a></li>
+                        <li><a href="{% url 'room_list' %}"><i class="fas fa-bed w-4"></i> Phòng nghỉ</a></li>
                         <li><a href="{% url 'service_list' %}"><i class="fas fa-concierge-bell w-4"></i> Dịch vụ</a>
                         </li>
-                        <li><a href="{% url 'gallery' %}"><i class="fas fa-images w-4"></i> Thư viện ảnh</a></li>
-                        <li><a href="{% url 'about' %}"><i class="fas fa-info-circle w-4"></i> Về dự án</a></li>
-                        <li><a href="{% url 'contact' %}"><i class="fas fa-envelope w-4"></i> Liên hệ</a></li>
+                        <li>
+                            <a href="{% url 'offers' %}" class="text-primary font-bold">
+                                <i class="fas fa-gift w-4"></i> Ưu đãi
+                            </a>
+                        </li>
+                        <li>
+                            <!-- 
+                          Sửa lỗi: Thẻ <summary> không nên lồng trong <li> 
+                          Cách đúng của DaisyUI là <li><details><summary>...</summary><ul>...</ul></details></li>
+                          Nhưng để đơn giản cho menu di động, chúng ta dùng <summary> làm tiêu đề.
+                        -->
+                            <summary class="py-2"><i class="fas fa-compass w-4"></i> Khám phá</summary>
+                            <ul class="p-2">
+                                <li><a href="{% url 'blog_list' %}"><i class="fas fa-newspaper w-5"></i> Tin tức &
+                                        Blog</a></li>
+                                <li><a href="{% url 'gallery' %}"><i class="fas fa-images w-5"></i> Thư viện ảnh</a>
+                                </li>
+                                <li><a href="{% url 'about' %}"><i class="fas fa-info-circle w-5"></i> Về chúng tôi</a>
+                                </li>
+                                <li><a href="{% url 'contact' %}"><i class="fas fa-envelope w-5"></i> Liên hệ</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
 
@@ -176,39 +264,54 @@
             </div>
 
             <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1 gap-2">
-                    <li><a href="{% url 'home' %}" class="font-medium rounded-lg"><i class="fas fa-home"></i> Trang
-                            chủ</a></li>
-                    <li><a href="{% url 'room_list' %}" class="font-medium rounded-lg"><i class="fas fa-bed"></i>
-                            Phòng</a></li>
-                    <li><a href="{% url 'service_list' %}" class="font-medium rounded-lg"><i
-                                class="fas fa-concierge-bell"></i> Dịch vụ</a></li>
-                    <li><a href="{% url 'gallery' %}" class="font-medium rounded-lg"><i class="fas fa-images"></i> Thư
-                            viện ảnh</a></li>
-                    <li><a href="{% url 'about' %}" class="font-medium rounded-lg"><i class="fas fa-info-circle"></i> Về
-                            dự án</a></li>
-                    <li><a href="{% url 'contact' %}" class="font-medium rounded-lg"><i class="fas fa-envelope"></i>
-                            Liên hệ</a></li>
+                <!-- Menu desktop (horizontal) -->
+                <ul class="menu menu-horizontal px-1 text-base font-medium">
+                    <li><a href="{% url 'home' %}" class="rounded-lg"><i class="fas fa-home"></i> Trang chủ</a></li>
+                    <li><a href="{% url 'room_list' %}" class="rounded-lg"><i class="fas fa-bed"></i> Phòng nghỉ</a>
+                    </li>
+                    <li><a href="{% url 'service_list' %}" class="rounded-lg"><i class="fas fa-concierge-bell"></i> Dịch
+                            vụ</a></li>
+                    <li>
+                        <a href="{% url 'offers' %}" class="text-primary font-bold rounded-lg">
+                            <i class="fas fa-gift"></i> Ưu đãi
+                        </a>
+                    </li>
+                    <li>
+                        <details>
+                            <summary class="rounded-lg"><i class="fas fa-compass"></i> Khám phá</summary>
+                            <ul class="p-2 bg-base-100 rounded-t-none w-52 shadow-lg z-50">
+                                <li><a href="{% url 'blog_list' %}"><i class="fas fa-newspaper w-5"></i> Tin tức &
+                                        Blog</a></li>
+                                <li><a href="{% url 'gallery' %}"><i class="fas fa-images w-5"></i> Thư viện ảnh</a>
+                                </li>
+                                <li><a href="{% url 'about' %}"><i class="fas fa-info-circle w-5"></i> Về chúng tôi</a>
+                                </li>
+                                <li><a href="{% url 'contact' %}"><i class="fas fa-envelope w-5"></i> Liên hệ</a></li>
+                            </ul>
+                        </details>
+                    </li>
                 </ul>
             </div>
 
-            <div class="navbar-end gap-2">
 
+            <div class="navbar-end gap-2">
+                <!-- Nút chuyển theme -->
                 <label class="swap swap-rotate btn btn-ghost btn-circle">
                     <input type="checkbox" id="theme-toggle" />
                     <i class="swap-off fas fa-moon text-lg"></i>
                     <i class="swap-on fas fa-sun text-lg"></i>
                 </label>
 
+                <!-- Logic User (Đã đăng nhập) -->
                 {% if user.is_authenticated %}
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar no-animation">
                         <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                             {% get_social_accounts user as social_accounts %}
-                            {% if social_accounts.google %}
-                            {% for account in social_accounts.google|slice:":1" %}
-                            <img src="{{ account.get_avatar_url }}" alt="User Avatar" />
-                            {% endfor %}
+                            {% if user.socialaccount_set.all.0.get_avatar_url %}
+                            <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="User Avatar" />
+                            {% elif user.profile_picture %}
+                            <img src="{{ user.profile_picture.url }}" alt="User Avatar" />
                             {% else %}
                             <div
                                 class="gradient-bg w-full h-full flex items-center justify-center text-white font-bold text-lg">
@@ -234,7 +337,7 @@
                         <li class="mt-2">
                             <a href="{% url 'profile' %}" class="flex items-center gap-3">
                                 <i class="fas fa-user-cog text-primary w-4 text-center"></i>
-                                <span>Tài khoản & Mật khẩu</span>
+                                <span>Hồ sơ & Tài khoản</span>
                             </a>
                         </li>
                         <li class="mt-2">
@@ -255,6 +358,7 @@
                         </li>
                     </ul>
                 </div>
+                <!-- Logic User (Chưa đăng nhập) -->
                 {% else %}
                 <div class="flex gap-2">
                     <a href="{% url 'account_login' %}" class="btn btn-ghost font-medium">
@@ -274,38 +378,59 @@
         {% endblock %}
     </main>
 
-    <div id="chat-popup"
-        class="hidden fixed bottom-24 right-4 sm:right-8 w-[90vw] max-w-md h-[70vh] max-h-[600px] z-[1001] bg-base-100 rounded-2xl shadow-xl border border-base-300 flex flex-col transition-all duration-300">
-        <div class="flex items-center justify-between p-4 gradient-bg rounded-t-2xl">
-            <h3 class="text-lg font-bold flex items-center gap-2">
-                <i class="fas fa-robot"></i> Tư vấn viên AI
-            </h3>
-            <button id="close-chat-btn" class="btn btn-ghost btn-sm btn-circle hover:bg-primary-dark">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto p-4 bg-base-200">
-            <div class="chat chat-start">
-                <div class="chat-bubble chat-bubble-info rounded-2xl shadow-sm">
-                    Chào bạn! Tôi là trợ lý AI của The Sailing Bay, tôi có thể giúp gì cho bạn?
-                </div>
-            </div>
-        </div>
-        <form id="chat-form" class="flex items-center gap-2 p-4 border-t border-base-300 bg-base-100 rounded-b-2xl">
-            <input id="chat-input" type="text" placeholder="Nhập câu hỏi..."
-                class="input input-bordered flex-1 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg" />
-            <button type="submit" class="btn btn-primary btn-sm rounded-lg">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </form>
-    </div>
 
-    <button id="chat-toggle-btn"
+
+    <button id="open-chat-bubble"
         class="btn btn-circle btn-lg floating-btn floating-btn-chat text-white border-0 shadow-lg hover:shadow-xl hover:scale-110 transition-all bg-gradient-to-br from-primary to-primary-focus"
-        title="Mở trợ lý chat">
+        aria-label="Mở cửa sổ chat">
         <i class="fas fa-comment-dots text-2xl"></i>
     </button>
 
+    <!-- Cửa sổ Chat Popup -->
+    <div id="chat-popup"
+        class="hidden fixed bottom-24 right-4 sm:right-8 w-[90vw] max-w-md h-[70vh] max-h-[600px] z-[1001] bg-base-100 rounded-2xl shadow-xl border border-base-300 flex flex-col transition-all duration-300 transform origin-bottom-right scale-95 opacity-0">
+    
+        <!-- Header - sử dụng màu base-100 và border -->
+        <div class="flex items-center justify-between p-3 bg-base-100 border-b border-base-300 rounded-t-2xl shadow-sm">
+            <h3 class="text-lg font-bold flex items-center gap-3 ml-2">
+                <i class="fas fa-robot"></i>
+                <span>Tư vấn viên AI</span>
+            </h3>
+    
+            <div class="flex items-center">
+                <button id="close-chat-btn" class="btn btn-ghost btn-sm btn-circle" aria-label="Đóng cửa sổ chat">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    
+        <!-- Khu vực tin nhắn - dùng bg-base-200 -->
+        <div id="chat-messages" class="flex-1 flex flex-col gap-2 overflow-y-auto p-4 bg-base-200">
+            <!-- Tin nhắn mẫu của Bot -->
+            <div class="chat chat-start">
+                <div class="chat-image avatar">
+                    <!-- CẬP NHẬT: Dùng <img> thay vì icon -->
+                    <div class="w-10 rounded-full">
+                        <img alt="Bot Avatar" src="https://placehold.co/40x40/A9ADC1/3D4451?text=Bot&font=inter" />
+                    </div>
+                </div>
+                <div class="chat-bubble">
+                    Xin chào! Tôi là trợ lý AI của The Sailing Bay, tôi có thể giúp gì cho bạn?
+                </div>
+            </div>  
+            <!-- JavaScript sẽ điền tin nhắn vào đây -->
+        </div>
+    
+        <!-- Form nhập liệu - dùng bg-base-100 và bo tròn -->
+        <form id="chat-form" class="flex items-center gap-2 p-3 border-t border-base-300 bg-base-100 rounded-b-2xl">
+            <input id="chat-input" type="text" placeholder="Nhập câu hỏi..."
+                class="input input-bordered w-full rounded-full focus:border-primary focus:ring-1 focus:ring-primary" />
+            <button id="chat-submit-btn" type="submit" class="btn btn-primary btn-circle flex-shrink-0"
+                aria-label="Gửi tin nhắn">
+                <i class="fas fa-paper-plane text-lg"></i>
+            </button>
+        </form>
+    </div>
     <button id="backToTop"
         class="floating-btn floating-btn-top btn btn-circle text-white shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 bg-gradient-to-br from-primary to-primary-focus"
         title="Back to top">
@@ -318,7 +443,8 @@
                 <a class="btn btn-ghost text-2xl font-bold no-animation" href="{% url 'home' %}">
                     <span class="gradient-text">Sailing Bay</span>
                 </a>
-                <p>Trang web giới thiệu về dự án "The Sailing Bay"<br>Cung cấp dịch vụ đặt phòng khách sạn ven biển.</p>
+                <p>Trang web giới thiệu về dự án "The Sailing Bay"<br>Cung cấp dịch vụ đặt phòng khách sạn ven biển.
+                </p>
                 <div class="flex gap-3 mt-4">
                     <a href="#" class="btn btn-circle btn-sm btn-ghost" aria-label="Facebook"><i
                             class="fab fa-facebook-f text-lg"></i></a>
