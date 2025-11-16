@@ -39,4 +39,4 @@ python manage.py runserver
 ```
 
 Install Model AI
-https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/tree/main
+https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/tree/main

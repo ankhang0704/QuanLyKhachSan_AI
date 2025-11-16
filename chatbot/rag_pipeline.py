@@ -16,7 +16,7 @@ BASE_DIR = settings.BASE_DIR
 KNOWLEDGE_BASE_DIR = BASE_DIR / "knowledge_base" # Thư mục chứa file .txt
 FAISS_INDEX_DIR = BASE_DIR / "faiss_index" # Thư mục lưu trữ FAISS index
 # Đảm bảo tên file model khớp 100% với file bạn tải về
-MODEL_PATH = os.path.join(settings.BASE_DIR, "models", "Phi-3-mini-4k-instruct-q4.gguf")
+MODEL_PATH = os.path.join(settings.BASE_DIR, "models", "Phi-4-mini-instruct-Q5_K_M.gguf")
 
 # Biến toàn cục để giữ instance
 rag_chain_instance = None
@@ -69,8 +69,11 @@ def initialize_chains():
         # 1. Khởi tạo LLM (Bộ não chính) - CHỈ 1 LẦN
         llm = LlamaCpp(
             model_path=str(MODEL_PATH),
-            temperature=0.1, max_tokens=512, n_ctx=2048,
-            top_p=1, verbose=False, n_gpu_layers=0
+            temperature=0.1, max_tokens=512, n_ctx=4096,
+            n_threads=8,
+            top_p=1, verbose=False, 
+            main_gpu=0,
+            n_gpu_layers= -1 # Tùy cấu hình máy
         )
         llm_instance = llm
 
