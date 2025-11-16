@@ -1,6 +1,6 @@
 import os
 from django.conf import settings
-
+import re
 # --- CÁC THƯ VIỆN LOCAL ---
 from langchain_community.llms.llamacpp import LlamaCpp
 from langchain_community.vectorstores import FAISS
@@ -13,10 +13,10 @@ from langchain_core.output_parsers import StrOutputParser
 
 # 1. Định nghĩa các đường dẫn
 BASE_DIR = settings.BASE_DIR
-KNOWLEDGE_BASE_DIR = BASE_DIR / "knowledge_base"
-FAISS_INDEX_DIR = BASE_DIR / "faiss_index"
+KNOWLEDGE_BASE_DIR = BASE_DIR / "knowledge_base" # Thư mục chứa file .txt
+FAISS_INDEX_DIR = BASE_DIR / "faiss_index" # Thư mục lưu trữ FAISS index
 # Đảm bảo tên file model khớp 100% với file bạn tải về
-MODEL_PATH = os.path.join(settings.BASE_DIR, "models", "qwen1_5-1_8b-chat-q4_k_m.gguf")
+MODEL_PATH = os.path.join(settings.BASE_DIR, "models", "Phi-3-mini-4k-instruct-q4.gguf")
 
 # Biến toàn cục để giữ instance
 rag_chain_instance = None
@@ -54,82 +54,119 @@ def load_vector_store():
     return vector_store
 
 # --- HÀM 2: KHỞI TẠO MODEL & CHAIN ---
-def initialize_rag_chain():
-    global rag_chain_instance
-    if rag_chain_instance is not None:
-        return rag_chain_instance
+def initialize_chains():
+    global llm_instance, rag_chain_instance, small_talk_chain_instance
+    if rag_chain_instance: # Nếu đã load rồi thì bỏ qua
+        return
 
-    print(f"Đang khởi tạo Local AI Model từ: {MODEL_PATH} ...")
+    print(f"Đang khởi tạo Local AI Model (Phi-3-mini) từ: {MODEL_PATH} ...")
     
-    # Kiểm tra xem file model có tồn tại không
     if not os.path.exists(MODEL_PATH):
-        print(f"LỖI: Không tìm thấy file model tại {MODEL_PATH}")
-        return None
+        print(f"LỖI: Không tìm thấy file model Phi-3 tại {MODEL_PATH}")
+        return
 
     try:
-        # --- 2. KHỞI TẠO LLAMACPP (Thay thế CTransformers) ---
-        # LlamaCpp tự động nhận diện model (Qwen, Llama, v.v.) nên không cần model_type
+        # 1. Khởi tạo LLM (Bộ não chính) - CHỈ 1 LẦN
         llm = LlamaCpp(
-            model_path=MODEL_PATH,
-            temperature=0.3,
-            max_tokens=512,
-            n_ctx=1024,       # Độ dài ngữ cảnh
-            top_p=1,
-            verbose=True,     # Hiện log chi tiết để debug
-            n_gpu_layers=0    # Để 0 nếu chạy CPU. Nếu có card rời NVIDIA, tăng lên (vd: 20)
+            model_path=str(MODEL_PATH),
+            temperature=0.1, max_tokens=512, n_ctx=2048,
+            top_p=1, verbose=False, n_gpu_layers=0
         )
-        # -----------------------------------------------------
+        llm_instance = llm
 
+        # 2. Khởi tạo Chain RAG (Dùng để tra cứu nghiệp vụ)
         vector_store = load_vector_store()
-        retriever = vector_store.as_retriever(search_kwargs={"k": 3})  # Lấy 1 đoạn gần nhất
-
-        # --- Tạo Prompt Template --- Hỗ trợ tiếng Việt
-        template = """<|im_start|>system
-        Bạn là nhân viên lễ tân của khách sạn The Sailing Bay.
-        Nhiệm vụ: Trả lời câu hỏi của khách dựa trên thông tin được cung cấp (Context).
+        retriever = vector_store.as_retriever(search_kwargs={"k": 3}) # Chỉ lấy 1 đoạn
         
-        YÊU CẦU BẮT BUỘC:
-        1. Trả lời hoàn toàn bằng TIẾNG VIỆT.
-        2. Văn phong: Thân thiện, ngắn gọn, xưng 'em' và gọi khách là 'quý khách'.
-        3. Nếu thông tin không có trong Context, hãy nói: "Dạ em xin lỗi, hiện em chưa có thông tin về vấn đề này ạ."
-        <|im_end|>
-        <|im_start|>user
-        Thông tin hỗ trợ (Context):
+        rag_template = """<|system|>
+        You are a virtual receptionist for "The Sailing Bay" resort.
+        Your task is to answer the user's question based *ONLY* on the provided "Context".
+        Do not invent or make up information. If the Context does not have the answer, you MUST say "Dạ em xin lỗi, em chưa có thông tin này ạ."
+
+        IMPORTANT: You MUST answer *ONLY* in Vietnamese (TIẾNG VIỆT).
+        You must address the user as 'quý khách' and yourself as 'em'.
+        <|end|>
+        <|user|>
+        Context:
         {context}
-        
-        Câu hỏi của khách: {question}
-        <|im_end|>
-        <|im_start|>assistant
-        """
-        
-        prompt = ChatPromptTemplate.from_template(template)
 
-        rag_chain = (
+        Question: {question}
+        <|end|>
+        <|assistant|>
+        """
+        rag_prompt = ChatPromptTemplate.from_template(rag_template)
+        rag_chain_instance = (
             {"context": retriever, "question": RunnablePassthrough()}
-            | prompt
+            | rag_prompt
             | llm
             | StrOutputParser()
         )
 
-        rag_chain_instance = rag_chain
-        print("Local AI (LlamaCpp) đã sẵn sàng!")
-        return rag_chain_instance
+        # 3. Khởi tạo Chain Small Talk (Dùng để chào hỏi)
+        small_talk_template = """<|system|>
+        You are a friendly virtual receptionist for "The Sailing Bay" resort.
+        Your task is to provide a short, friendly greeting (e.g., "Dạ em chào quý khách ạ") and ask how you can help.
+        DO NOT talk about history, politics, or any other topic.
+
+        IMPORTANT: You MUST answer *ONLY* in Vietnamese (TIẾNG VIỆT).
+        You must address the user as 'quý khách' and yourself as 'em'.
+        <|end|>
+        <|user|>
+        {question}
+        <|end|>
+        <|assistant|>
+        """
+        small_talk_prompt = ChatPromptTemplate.from_template(small_talk_template)
+        small_talk_chain_instance = small_talk_prompt | llm | StrOutputParser()
+        
+        print("AI (RAG và Small Talk) đã sẵn sàng!")
 
     except Exception as e:
         print(f"LỖI KHỞI TẠO LOCAL AI: {e}")
-        return None
 
-# --- HÀM 3: GỌI TỪ VIEW ---
-def get_chatbot_response(question):
-    rag_chain = initialize_rag_chain()
+# --- 4. DANH SÁCH TỪ KHÓA CHÀO HỎI (Router) ---
+SMALL_TALK_KEYWORDS = [
+    'xin chào', 'hello', 'hi', 'chào bạn', 'chào em', 
+    'cảm ơn', 'cám ơn', 'thanks', 'thank you', 'ok', 'oke',
+    'tạm biệt', 'bye'
+]
+
+def is_small_talk(question):
+    # Chuẩn hóa câu hỏi: chuyển về chữ thường, xóa dấu câu, ký tự đặc biệt
+    question_lower = question.lower().strip()
+    question_normalized = re.sub(r'[^\w\s]', '', question_lower)
     
-    if not rag_chain:
-        return "Lỗi: Không thể khởi tạo AI Model. Vui lòng kiểm tra file model trong thư mục."
-        
-    try:
-        # Invoke chain
-        response = rag_chain.invoke(question)
-        return response
-    except Exception as e:
-        print(f"Lỗi khi trả lời: {e}")
-        return "Xin lỗi, tôi đang gặp sự cố hệ thống."
+    # Kiểm tra xem câu hỏi CÓ CHỨA từ khóa hay không
+    # thay vì CHÍNH XÁC LÀ từ khóa
+    for keyword in SMALL_TALK_KEYWORDS:
+        if keyword in question_normalized:
+            # Thêm điều kiện: nếu câu hỏi quá dài, có thể không phải small talk
+            if len(question_normalized.split()) <= 5:
+                return True
+    return False
+
+# --- 5. HÀM CHÍNH ĐỂ GỌI TỪ VIEW (ĐÃ CÓ ROUTER) ---
+def get_chatbot_response(question):
+    # 1. Khởi tạo (nếu chưa)
+    initialize_chains() 
+    
+    if not rag_chain_instance or not small_talk_chain_instance:
+        return "Lỗi: AI chưa sẵn sàng. Vui lòng kiểm tra log server."
+
+    # 2. BỘ ĐỊNH TUYẾN (ROUTER)
+    if is_small_talk(question):
+        # Nếu là chào hỏi -> Dùng Chain "Chào hỏi" (KHÔNG TÌM KIẾM)
+        print(f"Router: Đang xử lý Small Talk cho: '{question}'")
+        try:
+            return small_talk_chain_instance.invoke({"question": question})
+        except Exception as e:
+            print(f"Lỗi Small Talk Chain: {e}")
+            return "Dạ em chào quý khách ạ." # Trả lời dự phòng
+    else:
+        # Nếu là nghiệp vụ -> Dùng Chain "RAG" (CÓ TÌM KIẾM)
+        print(f"Router: Đang tra cứu RAG cho: '{question}'")
+        try:
+            return rag_chain_instance.invoke(question)
+        except Exception as e:
+            print(f"Lỗi RAG Chain: {e}")
+            return "Xin lỗi, em đang gặp sự cố khi tra cứu."

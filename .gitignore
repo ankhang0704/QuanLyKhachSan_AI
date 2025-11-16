@@ -10,3 +10,4 @@ __pycache__/
 *.log
 models/*.gguf
 models/*.bin
+faiss_index/

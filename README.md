@@ -10,27 +10,33 @@ Step 2: Install requirements
 ```bash
 pip install -r requirements.txt
 ```
-Step 3: Update (if need)
+Step 3: Update
 ```bash
 python.exe -m pip install --upgrade pip
 ```
-Step 4: Migrate database (if need)
+Step 4: Migrate database
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-Step 4: If you use vscode press F5 to run project or
+Step 5: If you use vscode press F5 to run project or
 ```bash
 python manage.py runserver
 ```
+
 Superaccount
 username: admin123
 password: 123456
 
+Step 6: Edit Css (need install Node.js) cd your project (have file package.json)
+```bash
+npm install
+npm run watch
+```
+```bash
+python manage.py runserver
+```
 
-Mở terminal, cd vào thư mục gốc dự án (nơi có file package.json).
-
-Chạy npm install.
-
-Chạy npm run watch.
+Install Model AI
+https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/tree/main
