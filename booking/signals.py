@@ -6,11 +6,7 @@ from datetime import timedelta
 
 # Hàm trợ giúp (helper function)
 def update_inventory_range(room_type, start_date, end_date, change_amount):
-    """
-    Cập nhật tồn kho trong một khoảng ngày.
-    change_amount = -1 (Khi đặt mới)
-    change_amount = +1 (Khi hủy)
-    """
+    # Cập nhật tồn kho cho một khoảng ngày (start_date đến end_date)
     current_date = start_date
     while current_date < end_date: # Chỉ cập nhật đến ngày TRƯỚC ngày check-out
         try:
@@ -23,10 +19,7 @@ def update_inventory_range(room_type, start_date, end_date, change_amount):
         except Inventory.DoesNotExist:
             # (Trường hợp này hiếm khi xảy ra nếu bạn đã populate)
             print(f"Lỗi: Không tìm thấy tồn kho cho {room_type.name} ngày {current_date}")
-
         current_date += timedelta(days=1)
-
-
 # Lắng nghe sự kiện 'post_save' (sau khi lưu) của model Booking
 @receiver(post_save, sender=Booking)
 def handle_new_booking(sender, instance, created, **kwargs):

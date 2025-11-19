@@ -1,0 +1,185 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static dashboard_tags %}
+
+{% block extrahead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+{% get_dashboard_stats as stats %}
+
+<div class="row" style="margin-bottom: 30px;">
+
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box"
+            style="background: #28a745; color: white; padding: 15px; border-radius: 8px; min-height: 120px;">
+            <span class="info-box-icon" style="font-size: 40px; float: left; margin-right: 15px;"><i
+                    class="fas fa-money-bill-wave"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" style="display: block; text-transform: uppercase;">Tổng Doanh Thu</span>
+                <span class="info-box-number" style="font-weight: bold; font-size: 20px;">
+                    {{ stats.total_revenue }} VNĐ</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box"
+            style="background: #17a2b8; color: white; padding: 15px; border-radius: 8px; min-height: 120px;">
+            <span class="info-box-icon" style="font-size: 40px; float: left; margin-right: 15px;"><i
+                    class="fas fa-shopping-cart"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" style="display: block; text-transform: uppercase;">Tổng Đơn Đặt</span>
+                <span class="info-box-number" style="font-weight: bold; font-size: 24px;">{{ stats.total_bookings }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box"
+            style="background: #ffc107; color: white; padding: 15px; border-radius: 8px; min-height: 120px;">
+            <span class="info-box-icon" style="font-size: 40px; float: left; margin-right: 15px;"><i
+                    class="fas fa-plane-arrival"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" style="display: block; text-transform: uppercase;">Đến Hôm Nay</span>
+                <span class="info-box-number" style="font-weight: bold; font-size: 24px;">{{ stats.arrivals_today }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="info-box"
+            style="background: #dc3545; color: white; padding: 15px; border-radius: 8px; min-height: 120px;">
+            <span class="info-box-icon" style="font-size: 40px; float: left; margin-right: 15px;"><i
+                    class="fas fa-plane-departure"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text" style="display: block; text-transform: uppercase;">Đi Hôm Nay</span>
+                <span class="info-box-number" style="font-weight: bold; font-size: 24px;">{{ stats.departures_today }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"
+                style="background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ddd;">
+                <h3 class="card-title" style="margin: 0; font-size: 18px;">📦 Đơn Đặt Phòng Mới Nhất</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped" style="width: 100%; margin-bottom: 0;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 12px;">Mã #</th>
+                            <th style="padding: 12px;">Khách hàng</th>
+                            <th style="padding: 12px;">Phòng</th>
+                            <th style="padding: 12px;">Check-in</th>
+                            <th style="padding: 12px;">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in stats.recent_bookings %}
+                        <tr>
+                            <td style="padding: 12px;">
+                                <a href="/admin/booking/booking/{{ booking.id }}/change/">#{{ booking.id }}</a>
+                            </td>
+                            <td style="padding: 12px;">{{ booking.user.username }}</td>
+                            <td style="padding: 12px;">{{ booking.room.room_number }}</td>
+                            <td style="padding: 12px;">{{ booking.check_in|date:"d/m/Y" }}</td>
+                            <td style="padding: 12px;">
+                                {% if booking.status == 'booked' %}
+                                <span
+                                    style="background: #17a2b8; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px;">Mới
+                                    đặt</span>
+                                {% elif booking.status == 'checked_in' %}
+                                <span
+                                    style="background: #28a745; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px;">Đang
+                                    ở</span>
+                                {% elif booking.status == 'canceled' %}
+                                <span
+                                    style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px;">Đã
+                                    hủy</span>
+                                {% elif booking.status == 'checked_out' %}
+                                <span style="background: #5906df; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px;">Đã trả
+                                    phòng</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">Chưa có đơn đặt phòng nào.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"
+                style="background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #ddd;">
+                <h3 class="card-title" style="margin: 0; font-size: 18px;">📊 Tỷ Lệ Trạng Thái</h3>
+            </div>
+            <div class="card-body" style="padding: 15px;">
+                <canvas id="bookingStatusChart"
+                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row" style="margin-top: 30px;">
+    <div class="col-12">
+        {{ block.super }}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const rawData = JSON.parse('{{ stats.status_counts|escapejs }}');
+
+    // Kiểm tra dữ liệu trong Console (F12) để chắc chắn nó chạy
+    console.log("Chart Data:", rawData);
+
+    // --- Phần còn lại giữ nguyên ---
+    if (!rawData || rawData.length === 0) {
+        return; // Không vẽ nếu không có dữ liệu
+    }
+
+    const labels = rawData.map(item => item.status.toUpperCase());
+    const data = rawData.map(item => item.count);
+
+    const backgroundColors = [
+        '#17a2b8', // Booked
+        '#28a745', // Checked In
+        '#6c757d', // Checked Out
+        '#dc3545', // Canceled
+    ];
+
+    const chartCanvas = document.getElementById('bookingStatusChart');
+    if (chartCanvas) {
+        const ctx = chartCanvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors,
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: { position: 'bottom' }
+            }
+        });
+    }
+    });
+</script>
+{% endblock %}

@@ -58,11 +58,23 @@ class RoomImage(models.Model):
         return f'Ảnh cho {self.room_type.name}'
 # Model for Rooms
 class Room(models.Model):
+
+    ROOM_STATUS_CHOICES = (
+        ('clean', 'Sạch - Sẵn sàng đón khách'),
+        ('dirty', 'Bẩn - Cần dọn dẹp'),
+        ('maintenance', 'Đang bảo trì/Sửa chữa'),
+        ('occupied', 'Đang có khách ở'), # Tùy chọn: Có thể dùng hoặc không (xem giải thích bên dưới)
+    )
     room_number = models.CharField(max_length=10, unique=True)
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
-
+    status = models.CharField(
+        max_length=20, 
+        choices=ROOM_STATUS_CHOICES, 
+        default='clean', 
+        verbose_name="Trạng thái phòng"
+    )
     def __str__(self):
-        return f'Room {self.room_number} - {self.room_type.name}'
+        return f'Phòng {self.room_number} ({self.get_status_display()})'
 
 # Mô hình cho đặt phòng
 class Booking(models.Model):

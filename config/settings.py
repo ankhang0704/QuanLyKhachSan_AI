@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'django_extensions',
     'booking.apps.BookingConfig',
     'pages.apps.PagesConfig',
     'users.apps.UsersConfig',

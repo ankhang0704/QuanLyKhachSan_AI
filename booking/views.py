@@ -88,43 +88,36 @@ def booking_success_view(request, booking_id):
 @login_required 
 @transaction.atomic
 def booking_confirm_form_view(request, room_type_id):
+    # Lấy thông tin loại phòng
     room_type = get_object_or_404(RoomType, id=room_type_id)
-    
     check_in_str = request.session.get('booking_check_in')
     check_out_str = request.session.get('booking_check_out')
     if not check_in_str or not check_out_str:
         messages.error(request, "Vui lòng chọn ngày trước khi đặt phòng.")
         return redirect('search_results') 
-
+    # Chuyển đổi chuỗi ngày thành đối tượng date
     check_in = datetime.strptime(check_in_str, '%Y-%m-%d').date()
     check_out = datetime.strptime(check_out_str, '%Y-%m-%d').date()
-    
-                # (Tính toán giá cả)
+    # (Tính toán giá cả)
     num_nights = (check_out - check_in).days or 1
     calculated_price = room_type.price_per_night * num_nights 
     if request.method == 'POST':
-        
-        # === LOGIC KIỂM TRA LẠI (GIỐNG NHƯ CŨ, NHƯNG BỊ KHÓA) ===
-        # Chúng ta vẫn phải tìm 1 phòng cụ thể (VD: 201) để gán
-        
-        # 3. Dùng select_for_update() để KHÓA các đơn Booking đang xung đột
+        # Dùng transaction.atomic để đảm bảo tính toàn vẹn dữ liệu
         conflicting_bookings = Booking.objects.select_for_update().filter(
-            room__room_type=room_type,
-            status='booked', # Đã sửa ở lần trước
+            room__room_type=room_type, 
+            status='booked',  
             check_in__lt=check_out,
             check_out__gt=check_in
         ).values_list('room_id', flat=True)
-        
+        # Tìm phòng còn trống
         available_rooms = Room.objects.filter(
             room_type=room_type
         ).exclude(
             id__in=conflicting_bookings
         )
-        
+        # Nếu còn phòng, tạo booking
         if available_rooms.exists():
-            room_to_book = available_rooms.first() 
-            
-            
+            room_to_book = available_rooms.first()  # Lấy phòng đầu tiên còn trống
             # Tạo đơn Booking
             new_booking = Booking.objects.create(
                 user=request.user,
@@ -136,18 +129,14 @@ def booking_confirm_form_view(request, room_type_id):
             )
             # Tín hiệu (signal) ở Bước 3 sẽ tự động được kích hoạt
             # và TRỪ 1 phòng trong Inventory
-            
+            # Xoá ngày khỏi session
             del request.session['booking_check_in']
             del request.session['booking_check_out']
-            
-            return redirect('booking_success', booking_id=new_booking.id)
-        
+            return redirect('booking_success', booking_id=new_booking.id)     
         else:
             messages.error(request, "Rất tiếc, loại phòng này vừa có người khác đặt. Vui lòng thử lại.")
             return redirect('search_results')
-
-    # --- GIAI ĐOẠN 2: (Method GET) ---
-    # Chỉ hiển thị trang xác nhận
+    # Hiển thị form xác nhận
     context = {
         'room_type': room_type,
         'check_in': check_in,
